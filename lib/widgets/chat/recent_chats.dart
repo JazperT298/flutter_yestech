@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_yestech/models/message.dart';
-import 'package:flutter_yestech/widgets/chat_screen.dart';
+import 'package:flutter_yestech/models/chat/message.dart';
+import 'package:flutter_yestech/widgets/chat/chat_screen.dart';
 
 class RecentChats extends StatelessWidget {
   @override

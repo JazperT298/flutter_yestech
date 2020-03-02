@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_yestech/models/message.dart';
+import 'package:flutter_yestech/models/chat/message.dart';
 
 import 'chat_screen.dart';
 
@@ -15,7 +15,7 @@ class FavoriteContacts extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text('Favorite Contacts', style: TextStyle( color: Colors.white, fontSize: 15.0, fontWeight: FontWeight.bold, letterSpacing: 1.0, ), ),
+                  Text('Favorite Contacts', style: TextStyle( color: Colors.white, fontSize: 17.0, fontWeight: FontWeight.bold, letterSpacing: 1.0, ), ),
                   IconButton(
                     icon: Icon(
                       Icons.more_horiz,

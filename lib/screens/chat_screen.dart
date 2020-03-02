@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_yestech/widgets/category_selector.dart';
-import 'package:flutter_yestech/widgets/favorite_contacts.dart';
-import 'package:flutter_yestech/widgets/recent_chats.dart';
+import 'package:flutter_yestech/widgets/chat/category_selector.dart';
+import 'package:flutter_yestech/widgets/chat/favorite_contacts.dart';
+import 'package:flutter_yestech/widgets/chat/recent_chats.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -40,7 +40,6 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       body: Column(
         children: <Widget>[
-          CategorySelector(),
           Expanded(
             child: Container(
               decoration: BoxDecoration(

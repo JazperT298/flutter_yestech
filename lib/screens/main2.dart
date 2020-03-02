@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_yestech/models/user_data.dart';
 import 'package:flutter_yestech/screens/home_screen.dart';
@@ -12,41 +13,44 @@ class MyApp2 extends StatelessWidget {
 
   static final String id = 'main2';
 
-  // This widget is the root of your application.
-//  Widget _getScreenId(){
-//    return StreamBuilder<FirebaseUser>(
-//      stream: FirebaseAuth.instance.onAuthStateChanged,
-//      builder: (BuildContext context, snapshot) {
-//        if (snapshot.hasData){
-//          Provider.of<UserData> (context).currentUserId = snapshot.data.uid;
-//          return HomeScreen();
-//        }else {
-//          return OnboardingScreen();
-//        }
-//      },
-//    );
-//  }
+  Widget _getScreenId(){
+    return StreamBuilder<FirebaseUser>(
+      stream: FirebaseAuth.instance.onAuthStateChanged,
+      builder: (BuildContext context, snapshot) {
+        if (snapshot.hasData){
+          Provider.of<UserData> (context).currentUserId = snapshot.data.uid;
+          return HomeScreen();
+        }else {
+          return OnboardingScreen();
+        }
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Yestech',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryIconTheme: Theme.of(context).primaryIconTheme.copyWith(
-          color: Colors.black,
+    return ChangeNotifierProvider(
+      create: (context) => UserData(),
+      child: MaterialApp(
+        title: 'Yestech',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primaryIconTheme: Theme.of(context).primaryIconTheme.copyWith(
+            color: Colors.black,
+          ),
+          // primarySwatch: Colors.blue,
         ),
-        // primarySwatch: Colors.blue,
+        home: _getScreenId(),
+        routes: {
+          OnboardingScreen.id: (context) => OnboardingScreen(),
+          LoginScreen.id: (context) => LoginScreen(),
+          StartScreen.id: (context) => StartScreen(),
+          SignupScreen.id: (context) => SignupScreen(),
+          HomeScreen.id: (context) => HomeScreen(),
+          ProfileScreen.id: (context) => ProfileScreen(),
+        },
       ),
-      home: OnboardingScreen(),
-      routes: {
-        OnboardingScreen.id: (context) => OnboardingScreen(),
-        LoginScreen.id: (context) => LoginScreen(),
-        StartScreen.id: (context) => StartScreen(),
-        SignupScreen.id: (context) => SignupScreen(),
-        HomeScreen.id: (context) => HomeScreen(),
-        ProfileScreen.id: (context) => ProfileScreen(),
-      },
     );
 
   }

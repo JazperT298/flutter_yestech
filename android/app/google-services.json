@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "10208327593",
+    "firebase_url": "https://flutter-yestech.firebaseio.com",
+    "project_id": "flutter-yestech",
+    "storage_bucket": "flutter-yestech.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:10208327593:android:a183a39af3d66ad5b3f6b8",
+        "android_client_info": {
+          "package_name": "com.example.flutter_yestech"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "10208327593-jahngf39o3lvjv0a3efulj1ugaik8f71.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyy1FT0Cu_FhIRnf4lI5vQxFvmS8RWM7g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "10208327593-jahngf39o3lvjv0a3efulj1ugaik8f71.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

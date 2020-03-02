@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_yestech/services/auth_service.dart';
 
 class MenuScreen extends StatefulWidget {
   @override
@@ -27,7 +28,7 @@ class _MenuScreenState extends State<MenuScreen> {
             padding: EdgeInsets.only(top: 50.0, right: 25.0, left: 25.0),
             child: Container(
               width: double.infinity,
-              height: 500.0,
+              height: 700.0,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(20.0)),
@@ -186,6 +187,37 @@ class _MenuScreenState extends State<MenuScreen> {
                             SizedBox(height: 8.0,),
                             Text(
                               'Settings',
+                              style: TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.bold
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 40.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Column(
+                          children: <Widget>[
+                            Material(
+                              borderRadius: BorderRadius.circular(100.0),
+                              color: Colors.indigo.withOpacity(0.1),
+                              child: IconButton(
+                                padding: EdgeInsets.all(15.0),
+                                icon: Icon(Icons.exit_to_app),
+                                color: Colors.indigoAccent,
+                                iconSize: 40.0,
+                                onPressed: () => AuthService.logout(),
+                              ),
+                            ),
+                            SizedBox(height: 8.0,),
+                            Text(
+                              'Logout',
                               style: TextStyle(
                                   color: Colors.black54,
                                   fontWeight: FontWeight.bold

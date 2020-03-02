@@ -1,418 +1,280 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_yestech/models/user/user_educator.dart';
+import 'package:flutter_yestech/models/user_data.dart';
+import 'package:flutter_yestech/screens/edit_profile_screen.dart';
+import 'package:flutter_yestech/services/auth_service.dart';
+import 'package:flutter_yestech/services/database_service.dart';
+import 'package:flutter_yestech/utils/constant.dart';
 import 'dart:math' as math;
+
+import 'package:flutter_yestech/utils/network_image.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   static final String id = 'profile';
+  final String currentUserId;
+  final String userId;
 
+  ProfileScreen({this.currentUserId, this.userId});
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
-
-
-
 class _ProfileScreenState extends State<ProfileScreen> {
+  final image = 'https://scontent.fcgy1-1.fna.fbcdn.net/v/t31.0-8/p960x960/30168022_1897484493619658_4342911855731560664_o.jpg?_nc_cat=104&_nc_sid=7aed08&_nc_ohc=y2wtn9SPDBAAX9b7pQC&_nc_ht=scontent.fcgy1-1.fna&_nc_tp=6&oh=ddfb6d6aa1cc075ca31b4936b06f4d60&oe=5EEE308A';
+  UserEducator _profileUser;
+  String userids;
+
+  @override
+  void initState(){
+    super.initState();
+    _setupProfileUser();
+    print('dashboard  $widget.userId');
+  }
+
+  _setupProfileUser() async {
+    UserEducator profileUser = await DatabaseService.getUserWithId(widget.userId);
+    setState(() {
+      _profileUser = profileUser;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only( right: 25.0, left: 25.0),
-              child: Container(
-                width: double.infinity,
-                height: 360.0,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        offset: Offset(0.0, 3.0),
-                        blurRadius: 15.0
-                    ),
-                  ],
+      backgroundColor: Colors.grey.shade300,
+      body: FutureBuilder(
+        future: usersRef.document(widget.userId).get(),
+        builder: (BuildContext context, AsyncSnapshot snapshot){
+          if (!snapshot.hasData){
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          UserEducator userEducator = UserEducator.fromDoc(snapshot.data);
+          return SingleChildScrollView(
+            child: Stack(
+              children: <Widget>[
+                SizedBox(
+                  height: 250,
+                  width: double.infinity,
+                  child: userEducator.profileImageUrl.isEmpty
+                      ? PNetworkImage(
+                        image,
+                        fit: BoxFit.cover,)
+                      : PNetworkImage(userEducator.profileImageUrl,
+                      fit: BoxFit.cover,),
                 ),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 40.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Container(
+                  margin: EdgeInsets.fromLTRB(16.0, 200.0, 16.0, 16.0),
+                  child: Column(
+                    children: <Widget>[
+                      Stack(
                         children: <Widget>[
-                          Column(
-                            children: <Widget>[
-                              Material(
-                                borderRadius: BorderRadius.circular(100.0),
-                                color: Colors.blue.withOpacity(0.1),
-                                child: IconButton(
-                                  padding: EdgeInsets.all(15.0),
-                                  icon: Icon(Icons.details),
-                                  color: Colors.blueAccent,
-                                  iconSize: 40.0,
-                                  onPressed: () {},
+                          Container(
+                            padding: EdgeInsets.all(16.0),
+                            margin: EdgeInsets.only(top: 16.0),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(5.0)
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.only(left: 96.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        userEducator.firsname == null
+                                            ? userEducator.email
+                                            : userEducator.firsname + ' ' + userEducator.middlename.substring(0, 1) + '.' +  ' ' + userEducator.lastname,
+                                        style: Theme.of(context).textTheme.title,),
+                                      ListTile(
+                                        contentPadding: EdgeInsets.all(0),
+                                        title: Text(
+                                          userEducator.motto.isEmpty
+                                            ? "Mobile App Developer" : userEducator.motto
+                                        ),
+                                        subtitle: Text("CDO, Canada"),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              SizedBox(height: 8.0,),
-                              Text(
-                                'Details',
-                                style: TextStyle(
-                                    color: Colors.black54,
-                                    fontWeight: FontWeight.bold
+                                SizedBox(height: 10.0),
+                                Row(
+                                  children: <Widget>[
+                                    Expanded(child: Column(
+                                      children: <Widget>[
+                                        Text("285"),
+                                        Text("Likes")
+                                      ],
+                                    ),),
+                                    Expanded(child: Column(
+                                      children: <Widget>[
+                                        Text("3025"),
+                                        Text("Comments")
+                                      ],
+                                    ),),
+                                    Expanded(child: Column(
+                                      children: <Widget>[
+                                        Text("650"),
+                                        Text("Favourites")
+                                      ],
+                                    ),),
+                                  ],
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                          Column(
-                            children: <Widget>[
-                              Material(
-                                borderRadius: BorderRadius.circular(100.0),
-                                color: Colors.green.withOpacity(0.1),
-                                child: IconButton(
-                                  padding: EdgeInsets.all(15.0),
-                                  icon: Icon(Icons.account_circle),
-                                  color: Colors.greenAccent,
-                                  iconSize: 40.0,
-                                  onPressed: () {},
-                                ),
-                              ),
-                              SizedBox(height: 8.0,),
-                              Text(
-                                'Educators',
-                                style: TextStyle(
-                                    color: Colors.black54,
-                                    fontWeight: FontWeight.bold
-                                ),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: <Widget>[
-                              Material(
-                                borderRadius: BorderRadius.circular(100.0),
-                                color: Colors.orange.withOpacity(0.1),
-                                child: IconButton(
-                                  padding: EdgeInsets.all(15.0),
-                                  icon: Icon(Icons.subject),
-                                  color: Colors.orangeAccent,
-                                  iconSize: 40.0,
-                                  onPressed: () {},
-                                ),
-                              ),
-                              SizedBox(height: 8.0,),
-                              Text(
-                                'Subjects',
-                                style: TextStyle(
-                                    color: Colors.black54,
-                                    fontWeight: FontWeight.bold
-                                ),
-                              ),
-                            ],
-                          ),
-
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 40.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Column(
-                            children: <Widget>[
-                              Material(
-                                borderRadius: BorderRadius.circular(100.0),
-                                color: Colors.red.withOpacity(0.1),
-                                child: IconButton(
-                                  padding: EdgeInsets.all(15.0),
-                                  icon: Icon(Icons.stars),
-                                  color: Colors.redAccent,
-                                  iconSize: 40.0,
-                                  onPressed: () {},
-                                ),
-                              ),
-                              SizedBox(height: 8.0,),
-                              Text(
-                                'Stickers',
-                                style: TextStyle(
-                                    color: Colors.black54,
-                                    fontWeight: FontWeight.bold
-                                ),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: <Widget>[
-                              Material(
-                                borderRadius: BorderRadius.circular(100.0),
-                                color: Colors.purple.withOpacity(0.1),
-                                child: IconButton(
-                                  padding: EdgeInsets.all(15.0),
-                                  icon: Icon(Icons.my_location),
-                                  color: Colors.purpleAccent,
-                                  iconSize: 40.0,
-                                  onPressed: () {},
-                                ),
-                              ),
-                              SizedBox(height: 8.0,),
-                              Text(
-                                'Policy',
-                                style: TextStyle(
-                                    color: Colors.black54,
-                                    fontWeight: FontWeight.bold
-                                ),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: <Widget>[
-                              Material(
-                                borderRadius: BorderRadius.circular(100.0),
-                                color: Colors.pink.withOpacity(0.1),
-                                child: IconButton(
-                                  padding: EdgeInsets.all(15.0),
-                                  icon: Icon(Icons.exit_to_app),
-                                  color: Colors.pinkAccent,
-                                  iconSize: 40.0,
-                                  onPressed: () {},
-                                ),
-                              ),
-                              SizedBox(height: 8.0,),
-                              Text(
-                                'Logout',
-                                style: TextStyle(
-                                    color: Colors.black54,
-                                    fontWeight: FontWeight.bold
-                                ),
-                              ),
-                            ],
+                          Container(
+                            height: 80,
+                            width: 80,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                image: DecorationImage(
+                                    image: userEducator.profileImageUrl.isEmpty ?
+                                    CachedNetworkImageProvider(image): CachedNetworkImageProvider(userEducator.profileImageUrl),
+                                    fit: BoxFit.cover
+                                )
+                            ),
+                            margin: EdgeInsets.only(left: 16.0),
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
 
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-TextStyle _style(){
-  return TextStyle(
-      fontWeight: FontWeight.bold
-  );
-}
-
-final String url = "http://asianwiki.com/images/c/cd/Kim_Tae-Hee-p6.jpg";
-
-class CustomAppBar extends StatelessWidget
-    with PreferredSizeWidget{
-
-  @override
-  Size get preferredSize => Size(double.infinity, 320);
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipPath(
-      clipper: MyClipper(),
-      child: Container(
-        padding: EdgeInsets.only(top: 25.0),
-        decoration: BoxDecoration(
-            color: Colors.redAccent,
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.red,
-                  blurRadius: 20,
-                  offset: Offset(0, 0)
-              )
-            ]
-        ),
-        child: Column(
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.white,),
-                  onPressed: () =>
-                    Navigator.of(context).pop(),
-                ),
-
-                Text("Profile", style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),),
-
-                IconButton(
-                  icon: Icon(Icons.notifications, color: Colors.white,),
-                  onPressed: (){},
-                )
-              ],
-            ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-
-                Column(
-                  children: <Widget>[
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(url)
-                          )
-                      ),
-                    ),
-                    SizedBox(height: 16,),
-                    Text("Soo-In-Lee", style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18
-                      ),
-                    ),
-                  ],
-                ),
-
-                Column(
-                  children: <Widget>[
-                    Text("Stickers", style: TextStyle(
-                        color: Colors.white
-                    ),),
-                    Text("100", style: TextStyle(
-                        fontSize: 26,
-                        color: Colors.white
-                    ),)
-                  ],
-                ),
-
-                Column(
-                  children: <Widget>[
-                    Text("Educators", style: TextStyle(
-                        color: Colors.white
-                    ),),
-                    Text("100", style: TextStyle(
-                        fontSize: 26,
-                        color: Colors.white
-                    ),)
-                  ],
-                ),
-
-
-                Column(
-                  children: <Widget>[
-                    Text("Subjects", style: TextStyle(
-                        color: Colors.white
-                    ),),
-                    Text("100", style: TextStyle(
-                        fontSize: 26,
-                        color: Colors.white
-                    ),)
-                  ],
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-
-                Column(
-                  children: <Widget>[
-                    Text("Events", style: TextStyle(
-                        color: Colors.white
-                    ),),
-                    Text("100", style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24
-                    ),)
-                  ],
-                ),
-
-                SizedBox(width: 32,),
-
-                Column(
-                  children: <Widget>[
-                    Text("Daily",
-                      style: TextStyle(
-                          color: Colors.white
-                      ),),
-                    Text("100", style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24
-                    ))
-                  ],
-                ),
-
-                SizedBox(width: 16,)
-
-              ],
-            ),
-            SizedBox(height: 8,),
-
-            Align(
-              alignment: Alignment.bottomRight,
-              child: GestureDetector(
-                onTap: (){
-                  print("//TODO: button clicked");
-                },
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 24, 16, 0),
-                  child: Transform.rotate(
-                    angle: (math.pi * 0.05),
-                    child: Container(
-                      width: 110,
-                      height: 32,
-                      child: Center(child: Text("Edit Profile"),),
-                      decoration: BoxDecoration(
+                      SizedBox(height: 20.0),
+                      Container(
+                        decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(16)),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 20
-                            )
-                          ]
-                      ),
-                    ),
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            ListTile(title: Text("User information"),),
+                            Divider(),
+                            ListTile(
+                              title: Text("Email"),
+                              subtitle: Text(
+                                  userEducator.email.isEmpty
+                                      ? "vanne.marsmylle@gmail.com" : userEducator.email
+                              ),
+                              leading: Icon(Icons.email),
+                            ),
+                            ListTile(
+                              title: Text("Phone"),
+                              subtitle: Text(
+                                  userEducator.contact_number.isEmpty
+                                      ? "+977-9815225566" : userEducator.contact_number
+                              ),
+                              leading: Icon(Icons.phone),
+                            ),
+                            ListTile(
+                              title: Text("Facebook"),
+                              subtitle: Text(
+                                  userEducator.facebook.isEmpty
+                                      ? "facebook.com" : userEducator.facebook
+                              ),
+                              leading: Icon(Icons.face),
+                            ),
+                            ListTile(
+                              title: Text("Instagram"),
+                              subtitle: Text(
+                                  userEducator.instagram.isEmpty
+                                      ? "instagram.com" : userEducator.instagram
+                              ),
+                              leading: Icon(Icons.my_location),
+                            ),
+                            ListTile(
+                              title: Text("Twitter"),
+                              subtitle: Text(
+                                  userEducator.twitter.isEmpty
+                                      ? "twitter.com" : userEducator.twitter
+                              ),
+                              leading: Icon(Icons.web),
+                            ),
+                            ListTile(
+                              title: Text("About"),
+                              subtitle: Text("Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nulla, illo repellendus quas beatae reprehenderit nemo, debitis explicabo officiis sit aut obcaecati iusto porro? Exercitationem illum consequuntur magnam eveniet delectus ab."),
+                              leading: Icon(Icons.person),
+                            ),
+                            ListTile(
+                              title: Text("Joined Date"),
+                              subtitle: Text("15 February 2019"),
+                              leading: Icon(Icons.calendar_view_day),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
                   ),
                 ),
-              ),
-            )
-          ],
-        ),
+                AppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  actions: <Widget>[
+//                    IconButton(
+//                      icon: Icon(
+//                        Icons.more_vert,
+//                      ),
+//                      onPressed: () => _simplePopup,
+//                    ),
+                    PopupMenuButton<String>(
+                      onSelected: choiceAction,
+                      itemBuilder: (BuildContext context) {
+                        return Constants.choices.map((String choices) {
+                          return PopupMenuItem<String>(
+                            value: choices,
+                            child: Text(
+                                choices
+                            ),
+                          );
+                        }).toList();
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        }
       ),
     );
   }
+  Widget _simplePopup() => PopupMenuButton<int>(
+    itemBuilder: (context) => [
+      PopupMenuItem(
+        value: 1,
+        child: GestureDetector(
+          onTap: () =>  Navigator.push(context, MaterialPageRoute(builder: (_) => EditProfileScreen()),),
+            child: Text(
+                "Update Profile"
+            )
+        ),
+      ),
+    ],
+  );
+
+  void choiceAction(String choice){
+    if (choice == Constants.Settings){
+      print('Settings');
+    }else if (choice == Constants.Logout){
+      print('Logout');
+    }
+    else if (choice == Constants.EditProfile){
+      Navigator.push(context, MaterialPageRoute(builder: (_) => EditProfileScreen(userEducator: _profileUser,)),);
+    }
+  }
 }
+class Constants {
+  static const String Settings = 'Settings';
+  static const String Logout = 'Logout';
+  static const String EditProfile = 'Edit Profile';
 
-class MyClipper extends CustomClipper<Path> {
-
-  @override
-  Path getClip(Size size) {
-    Path p = Path();
-
-    p.lineTo(0, size.height - 80);
-    p.lineTo(size.width, size.height);
-
-    p.lineTo(size.width, 0);
-
-    p.close();
-
-    return p;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return true;
-  }
+  static const List<String> choices = <String>[
+    Settings,
+    Logout,
+    EditProfile
+  ];
 }

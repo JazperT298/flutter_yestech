@@ -1,7 +1,7 @@
 
 
 
-import 'package:flutter_yestech/models/user_model.dart';
+import 'package:flutter_yestech/models/chat/user_model.dart';
 
 class Message {
   final User sender;

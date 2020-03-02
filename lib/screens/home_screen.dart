@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_yestech/models/user_data.dart';
 import 'package:flutter_yestech/screens/chat_screen.dart';
+import 'package:flutter_yestech/screens/dashboard_screen.dart';
 import 'package:flutter_yestech/screens/feed_screen.dart';
 import 'package:flutter_yestech/screens/menu_screen.dart';
 import 'package:flutter_yestech/screens/notification_screen.dart';
 import 'package:flutter_yestech/screens/rank_screen.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
 
@@ -28,11 +31,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final String currentUserId = Provider.of<UserData> (context).currentUserId;
+    print( Provider.of<UserData>(context).currentUserId);
     return Scaffold(
       body: PageView(
         controller: _pageController,
         children: <Widget>[
-          FeedScreen(),
+          DashboardScreen(currentUserId: currentUserId,userId : currentUserId,),
           ChatScreen(),
           RankScreen(),
           NotificationScreen(),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_yestech/models/message.dart';
-import 'package:flutter_yestech/models/user_model.dart';
+import 'package:flutter_yestech/models/chat/message.dart';
+import 'package:flutter_yestech/models/chat/user_model.dart';
 
 class ChatScreen extends StatefulWidget {
 
