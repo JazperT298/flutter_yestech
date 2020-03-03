@@ -44,12 +44,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
       response = await Provider.of<AuthProvider>(context)
           .registerEducator(_email, _password);
-      if (response['success_educator']) {
-        AuthService.signUpEducator(context, _email, _password);
-        Navigator.push(context, MaterialPageRoute(
-            builder: (BuildContext context) => LoginScreen(roleId: widget.roleId)
-          )
-        );
+      if (response['success']) {
+        AuthService.signUpUsers(context, _email, _password, widget.roleId);
         Navigator.pop(context);
       } else {
         setState(() {
@@ -67,11 +63,7 @@ class _SignupScreenState extends State<SignupScreen> {
       response = await Provider.of<AuthProvider>(context)
           .registerStudent(_email, _password);
       if (response['success']) {
-        AuthService.signUpStudent(context, _email, _password);
-        Navigator.push(context, MaterialPageRoute(
-            builder: (BuildContext context) => LoginScreen(roleId: widget.roleId)
-          )
-        );
+        AuthService.signUpUsers(context, _email, _password, widget.roleId);
         Navigator.pop(context);
       } else {
         setState(() {
@@ -222,9 +214,9 @@ class _SignupScreenState extends State<SignupScreen> {
   }
   void checkUserId(){
     if (widget.roleId == '1'){
-      _registerUserStudent();
-    }else if (widget.roleId == '2'){
       _registerUserEducator();
+    }else if (widget.roleId == '2'){
+      _registerUserStudent();
     }
   }
 

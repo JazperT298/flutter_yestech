@@ -7,43 +7,23 @@ import 'package:flutter_yestech/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 
 class AuthService {
-  static final _authEducator = FirebaseAuth.instance;
-  static final _authStudent = FirebaseAuth.instance;
+  static final _auth = FirebaseAuth.instance;
   static final _firestore = Firestore.instance;
 
-  static void signUpEducator(
-    BuildContext context,String email, String password) async {
+  static void signUpUsers(
+    BuildContext context,String email, String password, String role) async {
     try{
         //showAlertDialog(context);
-        AuthResult authResult = await _authEducator.createUserWithEmailAndPassword(
+        AuthResult authResult = await _auth.createUserWithEmailAndPassword(
         email: email.trim(),
         password: password,
       );
       FirebaseUser signedInUser = authResult.user;
       if (signedInUser != null){
-        _firestore.collection('/userEducator').document(signedInUser.uid).setData({
+        _firestore.collection('/users').document(signedInUser.uid).setData({
           'email': email,
           'profileImageUrl': '',
-        });
-        Provider.of<AuthProvider>(context).currentUserId = signedInUser.uid;
-      }
-    }catch(e){
-      print(e);
-    }
-  }
-  static void signUpStudent(
-      BuildContext context,String email, String password) async {
-    try{
-      //showAlertDialog(context);
-      AuthResult authResult = await _authStudent.createUserWithEmailAndPassword(
-        email: email.trim(),
-        password: password,
-      );
-      FirebaseUser signedInUser = authResult.user;
-      if (signedInUser != null){
-        _firestore.collection('/userStudent').document(signedInUser.uid).setData({
-          'email': email,
-          'profileImageUrl': '',
+          'role': role,
         });
         Provider.of<AuthProvider>(context).currentUserId = signedInUser.uid;
       }
@@ -52,33 +32,15 @@ class AuthService {
     }
   }
 
-  static void logoutEducator(){
-    _authEducator.signOut();
+  static void logoutUsers(){
+    _auth.signOut();
   }
 
-  static void logoutStudent(){
-    _authEducator.signOut();
-  }
 
-  static void loginEduc( BuildContext context, String email, String password) async {
+  static void loginUsers( BuildContext context, String email, String password) async {
     try {
-      await _authEducator.signInWithEmailAndPassword(email: email.trim(), password: password.trim());
+      await _auth.signInWithEmailAndPassword(email: email.trim(), password: password.trim());
       Navigator.pop(context);
-      Navigator.push(context, MaterialPageRoute(
-          builder: (BuildContext context) => HomeScreen()
-      ));
-    }catch(e){
-      print(e);
-    }
-  }
-
-  static void loginStud( BuildContext context, String email, String password) async {
-    try {
-      await _authStudent.signInWithEmailAndPassword(email: email.trim(), password: password.trim());
-      Navigator.pop(context);
-      Navigator.push(context, MaterialPageRoute(
-          builder: (BuildContext context) => HomeScreen()
-      ));
     }catch(e){
       print(e);
     }

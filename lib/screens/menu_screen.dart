@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_yestech/providers/auth_provider.dart';
+import 'package:flutter_yestech/screens/start_screen.dart';
 import 'package:flutter_yestech/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
@@ -216,8 +217,8 @@ class _MenuScreenState extends State<MenuScreen> {
                                 iconSize: 40.0,
                                 onPressed: () {
                                   Provider.of<AuthProvider>(context).logOut();
-                                  AuthService.logoutEducator();
-                                  Navigator.pop(context);
+                                  AuthService.logoutUsers();
+                                  Navigator.pushReplacementNamed(context, StartScreen.id);
                                 }
                               ),
                             ),

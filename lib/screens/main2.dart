@@ -36,7 +36,7 @@ class MyApp2 extends StatelessWidget {
             },
           );
         }else {
-          return OnboardingScreen();
+          return StartScreen();
         }
       },
     );

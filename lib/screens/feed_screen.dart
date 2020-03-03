@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_yestech/models/chat/user_model.dart';
 import 'package:flutter_yestech/models/post_model.dart';
 import 'package:flutter_yestech/models/user/user_educator.dart';
+import 'package:flutter_yestech/models/user/users.dart';
 import 'package:flutter_yestech/screens/profile_screen.dart';
 import 'package:flutter_yestech/services/database_service.dart';
 import 'package:flutter_yestech/utils/constant.dart';
@@ -18,10 +20,10 @@ class FeedScreen extends StatefulWidget {
 
 class _FeedScreenState extends State<FeedScreen> {
   final image = 'https://scontent.fcgy1-1.fna.fbcdn.net/v/t31.0-8/p960x960/30168022_1897484493619658_4342911855731560664_o.jpg?_nc_cat=104&_nc_sid=7aed08&_nc_ohc=y2wtn9SPDBAAX9b7pQC&_nc_ht=scontent.fcgy1-1.fna&_nc_tp=6&oh=ddfb6d6aa1cc075ca31b4936b06f4d60&oe=5EEE308A';
-  UserEducator _profileUser;
+  Users _profileUser;
   List<Post> _posts = [];
   int count = 0;
-  UserEducator userEducator;
+  Users users;
 
   @override
   void initState() {
@@ -40,7 +42,7 @@ class _FeedScreenState extends State<FeedScreen> {
     });
   }
   _setupProfileUser() async {
-    UserEducator profileUser = await DatabaseService.getUserEducatorWithId(widget.userId);
+    Users profileUser = await DatabaseService.getUsersWithId(widget.userId);
     setState(() {
       _profileUser = profileUser;
     });
@@ -52,14 +54,14 @@ class _FeedScreenState extends State<FeedScreen> {
     return Scaffold(
       appBar: AppBar(
         title: FutureBuilder(
-        future: usersEducRef.document(widget.userId).get(),
+        future: usersRef.document(widget.userId).get(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData) {
             return Center(
               child: CircularProgressIndicator(),
             );
           }
-          UserEducator userEducator = UserEducator.fromDoc(snapshot.data);
+          Users users = Users.fromDoc(snapshot.data);
           return Row(
             children: [
               GestureDetector(
@@ -67,20 +69,20 @@ class _FeedScreenState extends State<FeedScreen> {
                     Navigator.pushReplacementNamed(context, ProfileScreen.id),
                 child: CircleAvatar(
                   radius: 20.0,
-                  backgroundImage: userEducator.profileImageUrl.isEmpty
+                  backgroundImage: users.profileImageUrl.isEmpty
                       ? CachedNetworkImageProvider(image)
                       : CachedNetworkImageProvider(
-                      userEducator.profileImageUrl),
+                      users.profileImageUrl),
                 ),
               ),
               Container(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  userEducator.firsname == null
-                      ? userEducator.email
-                      : userEducator.firsname + ' ' +
-                      userEducator.middlename.substring(0, 1) + '.' + ' ' +
-                      userEducator.lastname,
+                  users.firsname == null
+                      ? users.email
+                      : users.firsname + ' ' +
+                      users.middlename.substring(0, 1) + '.' + ' ' +
+                      users.lastname,
                   style: Theme
                       .of(context)
                       .textTheme
@@ -111,14 +113,14 @@ class _FeedScreenState extends State<FeedScreen> {
       ),
       body: _posts.length > 0 ?
       FutureBuilder(
-        future: usersEducRef.document(widget.userId).get(),
+        future: usersRef.document(widget.userId).get(),
         builder: (BuildContext context, AsyncSnapshot snapshot){
           if (!snapshot.hasData){
             return Center(
               child: CircularProgressIndicator(),
             );
           }
-          userEducator = UserEducator.fromDoc(snapshot.data);
+          users = Users.fromDoc(snapshot.data);
           return RefreshIndicator(
             onRefresh: () => _setupFeed(),
             child :ListView.builder(

@@ -4,14 +4,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_yestech/models/chat/user_model.dart';
 import 'package:flutter_yestech/models/user/user_educator.dart';
+import 'package:flutter_yestech/models/user/users.dart';
 import 'package:flutter_yestech/services/database_service.dart';
 import 'package:flutter_yestech/services/storage_service.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  final UserEducator userEducator;
+  final Users users;
 
- EditProfileScreen({ this.userEducator});
+ EditProfileScreen({ this.users});
   @override
   _EditProfileScreenState createState() => _EditProfileScreenState();
 }
@@ -40,7 +41,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override 
   void initState(){
     super.initState();
-    _email = widget.userEducator.email;
+    _email = widget.users.email;
   }
 
   _handleImageFromGallery() async {
@@ -53,10 +54,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
   _displayProfileImage() {
     if (_profileImage == null ){
-      if (widget.userEducator.profileImageUrl.isEmpty){
+      if (widget.users.profileImageUrl.isEmpty){
         return AssetImage('assets/images/user_placeholder.png');
       }else {
-        return CachedNetworkImageProvider(widget.userEducator.profileImageUrl);
+        return CachedNetworkImageProvider(widget.users.profileImageUrl);
       }
     }else {
       return FileImage(_profileImage);
@@ -71,12 +72,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       });
       String _profileImageUrl = '';
       if (_profileImage == null) {
-        _profileImageUrl = widget.userEducator.profileImageUrl;
+        _profileImageUrl = widget.users.profileImageUrl;
       }else {
-        _profileImageUrl = await StorageService.uploadUserProfileImage(widget.userEducator.profileImageUrl, _profileImage,);
+        _profileImageUrl = await StorageService.uploadUserProfileImage(widget.users.profileImageUrl, _profileImage,);
       }
-      UserEducator userEducator = UserEducator (
-        id: widget.userEducator.id,
+      Users users = Users (
+        id: widget.users.id,
         firsname: _firsname,
         lastname: _lastname,
         middlename: _middlename,
@@ -95,7 +96,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         profileImageUrl: _profileImageUrl,
       );
       //Database update
-      DatabaseService.updateUserEducator(userEducator);
+      DatabaseService.updateUsers(users);
       Navigator.pop(context);
     }
   }

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_yestech/customviews/progress_dialog.dart';
 import 'package:flutter_yestech/models/user/user_educator.dart';
+import 'package:flutter_yestech/services/auth_service.dart';
 import 'package:flutter_yestech/utils/constant.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -26,7 +27,7 @@ class AuthProvider with ChangeNotifier {
   ProgressDialog.getProgressDialog(ProgressDialogTitles.USER_LOG_IN);
 
   initAuthProvider() async {
-    String token = await getEducatorToken();
+    String token = await getToken();
     if (token != null) {
       _token = token;
       _status = Status.Authenticated;
@@ -36,7 +37,7 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> loginEducator(String email, String password) async {
+  Future<bool> loginEducator(BuildContext context, String email, String password) async {
     //progressDialog.showProgress();
     _status = Status.Authenticating;
     _notification = null;
@@ -49,16 +50,19 @@ class AuthProvider with ChangeNotifier {
     };
     final response = await http.post(url, body: body,);
     print(response.body.substring(1, response.body .length-1));
+    print('asdasdasdasdasd  $response.statusCode');
     if (response.statusCode == 200) {
+      print('educator login');
       Map<String, dynamic>  apiResponse = json.decode(response.body.substring(1, response.body .length-1));
       _status = Status.Authenticated;
       _token = apiResponse['user_token'];
-      await storeUserEducatorData(apiResponse);
+      print(_token);
+      await storeUsersData(apiResponse);
       notifyListeners();
       //progressDialog.hideProgress();
+      AuthService.loginUsers(context, email, password);
       return true;
-    }
-    if (response.statusCode == 401) {
+    }else if (response.statusCode == 401) {
       Fluttertoast.showToast(
           msg: "Invalid email or password.",
           backgroundColor: Colors.yellow,
@@ -81,25 +85,27 @@ class AuthProvider with ChangeNotifier {
     return false;
   }
 
-  Future<bool> loginStudent(String email, String password) async {
+  Future<bool> loginStudent(BuildContext context, String email, String password) async {
     _status = Status.Authenticating;
     _notification = null;
     notifyListeners();
     final url = "$api/controller_student/login_as_student_class.php";
     Map<String, String> body = {
-      'stud_email_address': email,
-      'stud_password': password,
+      'user_email_address': email,
+      'user_password': password,
     };
     final response = await http.post(url, body: body,);
+    print(response.body.substring(1, response.body .length-1));
     if (response.statusCode == 200) {
-      Map<String, String> apiResponse = json.decode(response.body);
+      print('student login');
+      Map<String, dynamic>  apiResponse = json.decode(response.body.substring(1, response.body .length-1));
       _status = Status.Authenticated;
-      _token = apiResponse['stud_token'];
-      await storeUserStudentData(apiResponse);
+      _token = apiResponse['user_token'];
+      await storeUsersData(apiResponse);
       notifyListeners();
+      AuthService.loginUsers(context, email, password);
       return true;
-    }
-    if (response.statusCode == 401) {
+    }else if (response.statusCode == 401) {
       _status = Status.Unauthenticated;
       Fluttertoast.showToast(
           msg: "Invalid email or password.",
@@ -131,7 +137,7 @@ class AuthProvider with ChangeNotifier {
       'user_password': password,
     };
     Map<String, dynamic> result = {
-      "success_educator": false,
+      "success": false,
       "message": 'Unknown error.'
     };
     final response = await http.post( url, body: body, );
@@ -145,7 +151,7 @@ class AuthProvider with ChangeNotifier {
           timeInSecForIos: 1
       );
       notifyListeners();
-      result['success_educator'] = true;
+      result['success'] = true;
       return result;
     }
     Map apiResponse = json.decode(response.body);
@@ -168,8 +174,8 @@ class AuthProvider with ChangeNotifier {
   Future<Map> registerStudent(String email, String password) async {
     final url = "$api/controller_student/register_as_student_class.php";
     Map<String, String> body = {
-      'stud_email_address': email,
-      'stud_password': password,
+      'user_email_address': email,
+      'user_password': password,
     };
     Map<String, dynamic> result = {
       "success": false,
@@ -191,12 +197,12 @@ class AuthProvider with ChangeNotifier {
     }
     Map apiResponse = json.decode(response.body);
     if (response.statusCode == 422) {
-      if (apiResponse['errors'].containsKey('stud_email_address')) {
-        result['message'] = apiResponse['errors']['stud_email_address'][0];
+      if (apiResponse['errors'].containsKey('user_email_address')) {
+        result['message'] = apiResponse['errors']['user_email_address'][0];
         return result;
       }
-      if (apiResponse['errors'].containsKey('stud_password')) {
-        result['message'] = apiResponse['errors']['stud_password'][0];
+      if (apiResponse['errors'].containsKey('user_password')) {
+        result['message'] = apiResponse['errors']['user_password'][0];
         return result;
       }
       return result;
@@ -225,27 +231,16 @@ class AuthProvider with ChangeNotifier {
   }
 
 
-  storeUserEducatorData(apiResponse) async {
+  storeUsersData(apiResponse) async {
     SharedPreferences storage = await SharedPreferences.getInstance();
     await storage.setString('user_token', apiResponse['user_token']);
 //    await storage.setString('user_email_address', apiResponse['tbl_users']['user_email_address']);
   }
 
-  storeUserStudentData(apiResponse) async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    await storage.setString('stud_token', apiResponse['stud_token']);
-//    await storage.setString('user_email_address', apiResponse['tbl_users']['user_email_address']);
-  }
 
-  Future<String> getEducatorToken() async {
+  Future<String> getToken() async {
     SharedPreferences storage = await SharedPreferences.getInstance();
     String token = storage.getString('user_token');
-    return token;
-  }
-
-  Future<String> getStudentToken() async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    String token = storage.getString('stud_token');
     return token;
   }
 

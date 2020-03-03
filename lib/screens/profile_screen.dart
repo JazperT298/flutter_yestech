@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_yestech/models/user/user_educator.dart';
+import 'package:flutter_yestech/models/user/users.dart';
 import 'package:flutter_yestech/models/user_data.dart';
 import 'package:flutter_yestech/screens/edit_profile_screen.dart';
 import 'package:flutter_yestech/services/auth_service.dart';
@@ -22,7 +23,7 @@ class ProfileScreen extends StatefulWidget {
 }
 class _ProfileScreenState extends State<ProfileScreen> {
   final image = 'https://scontent.fcgy1-1.fna.fbcdn.net/v/t31.0-8/p960x960/30168022_1897484493619658_4342911855731560664_o.jpg?_nc_cat=104&_nc_sid=7aed08&_nc_ohc=y2wtn9SPDBAAX9b7pQC&_nc_ht=scontent.fcgy1-1.fna&_nc_tp=6&oh=ddfb6d6aa1cc075ca31b4936b06f4d60&oe=5EEE308A';
-  UserEducator _profileUser;
+  Users _profileUser;
   String userids;
 
   @override
@@ -33,7 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   _setupProfileUser() async {
-    UserEducator profileUser = await DatabaseService.getUserEducatorWithId(widget.userId);
+    Users profileUser = await DatabaseService.getUsersWithId(widget.userId);
     setState(() {
       _profileUser = profileUser;
     });
@@ -44,25 +45,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
       body: FutureBuilder(
-        future: usersEducRef.document(widget.userId).get(),
+        future: usersRef.document(widget.userId).get(),
         builder: (BuildContext context, AsyncSnapshot snapshot){
           if (!snapshot.hasData){
             return Center(
               child: CircularProgressIndicator(),
             );
           }
-          UserEducator userEducator = UserEducator.fromDoc(snapshot.data);
+          Users users = Users.fromDoc(snapshot.data);
           return SingleChildScrollView(
             child: Stack(
               children: <Widget>[
                 SizedBox(
                   height: 250,
                   width: double.infinity,
-                  child: userEducator.profileImageUrl.isEmpty
+                  child: users.profileImageUrl.isEmpty
                       ? PNetworkImage(
                         image,
                         fit: BoxFit.cover,)
-                      : PNetworkImage(userEducator.profileImageUrl,
+                      : PNetworkImage(users.profileImageUrl,
                       fit: BoxFit.cover,),
                 ),
                 Container(
@@ -87,15 +88,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(
-                                        userEducator.firsname == null
-                                            ? userEducator.email
-                                            : userEducator.firsname + ' ' + userEducator.middlename.substring(0, 1) + '.' +  ' ' + userEducator.lastname,
+                                        users.firsname == null
+                                            ? users.email
+                                            : users.firsname + ' ' + users.middlename.substring(0, 1) + '.' +  ' ' + users.lastname,
                                         style: Theme.of(context).textTheme.title,),
                                       ListTile(
                                         contentPadding: EdgeInsets.all(0),
                                         title: Text(
-                                          userEducator.motto.isEmpty
-                                            ? "Mobile App Developer" : userEducator.motto
+                                            users.motto.isEmpty
+                                            ? "Mobile App Developer" : users.motto
                                         ),
                                         subtitle: Text("CDO, Canada"),
                                       ),
@@ -134,8 +135,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10.0),
                                 image: DecorationImage(
-                                    image: userEducator.profileImageUrl.isEmpty ?
-                                    CachedNetworkImageProvider(image): CachedNetworkImageProvider(userEducator.profileImageUrl),
+                                    image: users.profileImageUrl.isEmpty ?
+                                    CachedNetworkImageProvider(image): CachedNetworkImageProvider(users.profileImageUrl),
                                     fit: BoxFit.cover
                                 )
                             ),
@@ -157,40 +158,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ListTile(
                               title: Text("Email"),
                               subtitle: Text(
-                                  userEducator.email.isEmpty
-                                      ? "vanne.marsmylle@gmail.com" : userEducator.email
+                                  users.email.isEmpty
+                                      ? "vanne.marsmylle@gmail.com" : users.email
                               ),
                               leading: Icon(Icons.email),
                             ),
                             ListTile(
                               title: Text("Phone"),
                               subtitle: Text(
-                                  userEducator.contact_number.isEmpty
-                                      ? "+977-9815225566" : userEducator.contact_number
+                                  users.contact_number.isEmpty
+                                      ? "+977-9815225566" : users.contact_number
                               ),
                               leading: Icon(Icons.phone),
                             ),
                             ListTile(
                               title: Text("Facebook"),
                               subtitle: Text(
-                                  userEducator.facebook.isEmpty
-                                      ? "facebook.com" : userEducator.facebook
+                                  users.facebook.isEmpty
+                                      ? "facebook.com" : users.facebook
                               ),
                               leading: Icon(Icons.face),
                             ),
                             ListTile(
                               title: Text("Instagram"),
                               subtitle: Text(
-                                  userEducator.instagram.isEmpty
-                                      ? "instagram.com" : userEducator.instagram
+                                  users.instagram.isEmpty
+                                      ? "instagram.com" : users.instagram
                               ),
                               leading: Icon(Icons.my_location),
                             ),
                             ListTile(
                               title: Text("Twitter"),
                               subtitle: Text(
-                                  userEducator.twitter.isEmpty
-                                      ? "twitter.com" : userEducator.twitter
+                                  users.twitter.isEmpty
+                                      ? "twitter.com" : users.twitter
                               ),
                               leading: Icon(Icons.web),
                             ),
@@ -263,7 +264,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       print('Logout');
     }
     else if (choice == Constants.EditProfile){
-      Navigator.push(context, MaterialPageRoute(builder: (_) => EditProfileScreen(userEducator: _profileUser,)),);
+      Navigator.push(context, MaterialPageRoute(builder: (_) => EditProfileScreen(users: _profileUser,)),);
     }
   }
 }

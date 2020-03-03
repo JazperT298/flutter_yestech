@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_yestech/models/user/user_educator.dart';
+import 'package:flutter_yestech/models/user/users.dart';
 import 'package:flutter_yestech/models/user_data.dart';
 import 'package:flutter_yestech/models/user_models.dart';
 import 'package:flutter_yestech/providers/auth_provider.dart';
@@ -26,7 +27,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final image = 'https://scontent.fcgy1-1.fna.fbcdn.net/v/t31.0-8/p960x960/30168022_1897484493619658_4342911855731560664_o.jpg?_nc_cat=104&_nc_sid=7aed08&_nc_ohc=y2wtn9SPDBAAX9b7pQC&_nc_ht=scontent.fcgy1-1.fna&_nc_tp=6&oh=ddfb6d6aa1cc075ca31b4936b06f4d60&oe=5EEE308A';
   final TextStyle whiteText = TextStyle(color: Colors.white);
 
-  UserEducator _profileUser;
+  Users _profileUser;
 
   @override
   void initState() {
@@ -36,7 +37,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   _setupProfileUser() async {
-    UserEducator profileUser = await DatabaseService.getUserEducatorWithId(widget.userId);
+    Users profileUser = await DatabaseService.getUsersWithId(widget.userId);
     setState(() {
       _profileUser = profileUser;
       print('_profileUser  $profileUser');
@@ -48,27 +49,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: FutureBuilder(
-          future: usersEducRef.document(widget.userId).get(),
+          future: usersRef.document(widget.userId).get(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
               return Center(
                 child: CircularProgressIndicator(),
               );
             }
-            UserEducator user = UserEducator.fromDoc(snapshot.data);
+            Users user = Users.fromDoc(snapshot.data);
             return _buildBody(context, user);
           }),
 
 //          return _buildBody(context)),
     );
   }
-  Widget _buildBody(BuildContext context,UserEducator user ) {
+  Widget _buildBody(BuildContext context,Users users ) {
     final String currentUserId = Provider.of<AuthProvider> (context).currentUserId;
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          _buildHeader(user),
+          _buildHeader(users),
           const SizedBox(height: 20.0),
           Padding(
             padding: const EdgeInsets.only(left: 16.0),
@@ -307,7 +308,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Container _buildHeader(UserEducator user) {
+  Container _buildHeader(Users users) {
     final String currentUserId = Provider.of<AuthProvider> (context).currentUserId;
     return Container(
       padding: const EdgeInsets.fromLTRB(0, 50.0, 0, 32.0),
@@ -337,18 +338,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
               radius: 25.0,
-              backgroundImage: user.profileImageUrl.isEmpty
+              backgroundImage: users.profileImageUrl.isEmpty
                 ? CachedNetworkImageProvider(image)
-                  : CachedNetworkImageProvider(user.profileImageUrl),
+                  : CachedNetworkImageProvider(users.profileImageUrl),
             ),
           ),
           const SizedBox(height: 10.0),
           Padding(
             padding: const EdgeInsets.only(left: 16.0),
             child: Text(
-              user.firsname == null
-                  ? user.email
-                  : user.firsname + ' ' + user.middlename.substring(0, 1) + '.' +  ' ' + user.lastname,
+              users.firsname == null
+                  ? users.email
+                  : users.firsname + ' ' + users.middlename.substring(0, 1) + '.' +  ' ' + users.lastname,
               style: whiteText.copyWith(
                 fontSize: 18.0,
                 fontWeight: FontWeight.w500,
@@ -359,8 +360,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Padding(
             padding: const EdgeInsets.only(left: 16.0),
             child: Text(
-              user.motto.isEmpty
-                  ? "Mobile App Developer" : user.motto,
+              users.motto.isEmpty
+                  ? "Mobile App Developer" : users.motto,
               style: whiteText,
             ),
           ),

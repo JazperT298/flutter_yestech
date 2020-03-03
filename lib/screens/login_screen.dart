@@ -41,16 +41,16 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> loginEducator() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      AuthService.loginEduc(context, _email, _password);
-      await Provider.of<AuthProvider>(context).loginEducator(_email, _password);
+      await Provider.of<AuthProvider>(context).loginEducator(context, _email, _password);
+      //AuthService.loginUsers(context, _email, _password);
     }
   }
   //Login Student to from API and Firebase
   Future<void> loginStudent() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      AuthService.loginStud(context, _email, _password);
-      await Provider.of<AuthProvider>(context).loginStudent(_email, _password);
+      await Provider.of<AuthProvider>(context).loginStudent(context, _email, _password);
+      //AuthService.loginUsers(context, _email, _password);
     }
   }
 
@@ -169,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 alignment: Alignment.bottomCenter,
                 child: RaisedButton(
                   // ignore: unrelated_type_equality_checks
-                  onPressed: widget.roleId == '1' ? loginStudent : loginEducator,
+                  onPressed: widget.roleId == '2' ? loginStudent : loginEducator,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0)),
                   child: Text("Login", style: TextStyle(color: Colors.white70)),
                   color: Colors.blue,

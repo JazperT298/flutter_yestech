@@ -64,7 +64,7 @@ class _StartScreenState extends State<StartScreen> {
                           height: 80.0,
                           child: FlatButton(
                             onPressed: () => Navigator.push(context, MaterialPageRoute(
-                                builder: (BuildContext context) => LoginScreen(roleId: '1')
+                                builder: (BuildContext context) => LoginScreen(roleId: '2')
                               )
                             ),
                             child: Row(
@@ -104,7 +104,7 @@ class _StartScreenState extends State<StartScreen> {
                           height: 80.0,
                           child: FlatButton(
                             onPressed: () => Navigator.push(context, MaterialPageRoute(
-                                builder: (BuildContext context) => LoginScreen(roleId: '2')
+                                builder: (BuildContext context) => LoginScreen(roleId: '1')
                             )),
                             child: Row(
                               children: <Widget>[
