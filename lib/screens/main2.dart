@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_yestech/models/user_data.dart';
+import 'package:flutter_yestech/providers/auth_provider.dart';
 import 'package:flutter_yestech/screens/home_screen.dart';
 import 'package:flutter_yestech/screens/login_screen.dart';
 import 'package:flutter_yestech/screens/onboarding_screen.dart';
 import 'package:flutter_yestech/screens/profile_screen.dart';
 import 'package:flutter_yestech/screens/signup_screen.dart';
+import 'package:flutter_yestech/screens/splash_screen.dart';
 import 'package:flutter_yestech/screens/start_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -18,20 +20,34 @@ class MyApp2 extends StatelessWidget {
       stream: FirebaseAuth.instance.onAuthStateChanged,
       builder: (BuildContext context, snapshot) {
         if (snapshot.hasData){
-          Provider.of<UserData> (context).currentUserId = snapshot.data.uid;
-          return HomeScreen();
+          Provider.of<AuthProvider> (context).currentUserId = snapshot.data.uid;
+          return Consumer<AuthProvider>(
+            builder: (context, user, child) {
+              switch (user.status) {
+                case Status.Uninitialized:
+                  return SplashScreen();
+                case Status.Unauthenticated:
+                  return StartScreen();
+                case Status.Authenticated:
+                  return HomeScreen();
+                default:
+                  return StartScreen();
+              }
+            },
+          );
         }else {
           return OnboardingScreen();
         }
       },
     );
+
   }
 
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => UserData(),
+      builder: (context) => AuthProvider(),
       child: MaterialApp(
         title: 'Yestech',
         debugShowCheckedModeBanner: false,

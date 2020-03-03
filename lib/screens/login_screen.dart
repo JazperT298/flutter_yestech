@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
+import 'package:flutter_yestech/providers/auth_provider.dart';
 import 'package:flutter_yestech/screens/home_screen.dart';
 import 'package:flutter_yestech/screens/signup_screen.dart';
 import 'package:flutter_yestech/services/auth_service.dart';
 import 'package:flutter_yestech/utils/network_image.dart';
 import 'package:flutter_yestech/utils/styles.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
 
   static final String id = 'login_screen';
+
+  final String roleId;
+
+  const LoginScreen({Key key, this.roleId}) : super(key: key);
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -22,23 +29,28 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _saving = false;
   final _formKey = GlobalKey<FormState>();
   String _email, _password;
+  String _message = '';
 
-  _loginUser() {
-    setState(() {
-      _saving = true;
-    });
-    if (_formKey.currentState.validate()){
+  @override
+  void initState() {
+    super.initState();
+    print(widget.roleId);
+  }
 
-      new Future.delayed(new Duration(seconds: 5), () {
-        setState(() {
-          _saving = false;
-          _formKey.currentState.save();
-          print(_email);
-          print(_password);
-          AuthService.login(context, _email, _password);
-        });
-      });
-
+  //Login Educator to from API and Firebase
+  Future<void> loginEducator() async {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      AuthService.loginEduc(context, _email, _password);
+      await Provider.of<AuthProvider>(context).loginEducator(_email, _password);
+    }
+  }
+  //Login Student to from API and Firebase
+  Future<void> loginStudent() async {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      AuthService.loginStud(context, _email, _password);
+      await Provider.of<AuthProvider>(context).loginStudent(_email, _password);
     }
   }
 
@@ -57,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
               FlatButton(
                 onPressed: (){
                   Navigator.push(context, MaterialPageRoute(
-                      builder: (BuildContext context) => SignupScreen()
+                      builder: (BuildContext context) => SignupScreen(roleId: widget.roleId,)
                   ));
                 },
                 child: Text("Sign Up", style: TextStyle(color: Colors.blue, fontSize: 18.0)),
@@ -72,9 +84,11 @@ class _LoginScreenState extends State<LoginScreen> {
   Container _buildLoginForm() {
     return Container(
       padding: EdgeInsets.all(20.0),
-      child: ModalProgressHUD(
-        inAsyncCall: _saving,
-        child: Stack(
+      child:
+//        ModalProgressHUD(
+//        inAsyncCall: _saving,
+//        child:
+        Stack(
           children: <Widget>[
             ClipPath(
               clipper: RoundedDiagonalPathClipper(),
@@ -154,7 +168,8 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: RaisedButton(
-                  onPressed: _loginUser,
+                  // ignore: unrelated_type_equality_checks
+                  onPressed: widget.roleId == '1' ? loginStudent : loginEducator,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0)),
                   child: Text("Login", style: TextStyle(color: Colors.white70)),
                   color: Colors.blue,
@@ -163,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
             )
           ],
         ),
-      ),
+      //),
     );
   }
 

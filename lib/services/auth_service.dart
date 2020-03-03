@@ -2,48 +2,79 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_yestech/models/user_data.dart';
+import 'package:flutter_yestech/providers/auth_provider.dart';
 import 'package:flutter_yestech/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 
 class AuthService {
-  static final _auth = FirebaseAuth.instance;
+  static final _authEducator = FirebaseAuth.instance;
+  static final _authStudent = FirebaseAuth.instance;
   static final _firestore = Firestore.instance;
 
-  static void signUpUser(
+  static void signUpEducator(
     BuildContext context,String email, String password) async {
     try{
         //showAlertDialog(context);
-        AuthResult authResult = await _auth.createUserWithEmailAndPassword(
+        AuthResult authResult = await _authEducator.createUserWithEmailAndPassword(
         email: email.trim(),
         password: password,
       );
       FirebaseUser signedInUser = authResult.user;
       if (signedInUser != null){
-        _firestore.collection('/users').document(signedInUser.uid).setData({
+        _firestore.collection('/userEducator').document(signedInUser.uid).setData({
           'email': email,
           'profileImageUrl': '',
         });
-        Provider.of<UserData>(context).currentUserId = signedInUser.uid;
-        Navigator.pop(context);
-        Navigator.push(context, MaterialPageRoute(
-            builder: (BuildContext context) => HomeScreen()
-        ));
-        // Navigator.pushReplacementNamed(context, FeedScreen.id);
+        Provider.of<AuthProvider>(context).currentUserId = signedInUser.uid;
       }
     }catch(e){
       print(e);
     }
-
+  }
+  static void signUpStudent(
+      BuildContext context,String email, String password) async {
+    try{
+      //showAlertDialog(context);
+      AuthResult authResult = await _authStudent.createUserWithEmailAndPassword(
+        email: email.trim(),
+        password: password,
+      );
+      FirebaseUser signedInUser = authResult.user;
+      if (signedInUser != null){
+        _firestore.collection('/userStudent').document(signedInUser.uid).setData({
+          'email': email,
+          'profileImageUrl': '',
+        });
+        Provider.of<AuthProvider>(context).currentUserId = signedInUser.uid;
+      }
+    }catch(e){
+      print(e);
+    }
   }
 
-  static void logout(){
-    _auth.signOut();
-    //Navigator.pushReplacementNamed(context, LoginScreen.id);
+  static void logoutEducator(){
+    _authEducator.signOut();
   }
 
-  static void login( BuildContext context, String email, String password) async {
+  static void logoutStudent(){
+    _authEducator.signOut();
+  }
+
+  static void loginEduc( BuildContext context, String email, String password) async {
     try {
-      await _auth.signInWithEmailAndPassword(email: email.trim(), password: password.trim());
+      await _authEducator.signInWithEmailAndPassword(email: email.trim(), password: password.trim());
+      Navigator.pop(context);
+      Navigator.push(context, MaterialPageRoute(
+          builder: (BuildContext context) => HomeScreen()
+      ));
+    }catch(e){
+      print(e);
+    }
+  }
+
+  static void loginStud( BuildContext context, String email, String password) async {
+    try {
+      await _authStudent.signInWithEmailAndPassword(email: email.trim(), password: password.trim());
       Navigator.pop(context);
       Navigator.push(context, MaterialPageRoute(
           builder: (BuildContext context) => HomeScreen()

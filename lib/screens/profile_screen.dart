@@ -33,7 +33,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   _setupProfileUser() async {
-    UserEducator profileUser = await DatabaseService.getUserWithId(widget.userId);
+    UserEducator profileUser = await DatabaseService.getUserEducatorWithId(widget.userId);
     setState(() {
       _profileUser = profileUser;
     });
@@ -44,7 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
       body: FutureBuilder(
-        future: usersRef.document(widget.userId).get(),
+        future: usersEducRef.document(widget.userId).get(),
         builder: (BuildContext context, AsyncSnapshot snapshot){
           if (!snapshot.hasData){
             return Center(

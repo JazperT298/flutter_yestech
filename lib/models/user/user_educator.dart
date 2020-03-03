@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-class UserEducator {
+@JsonSerializable()
+class UserEducator extends Object with _$UserSerializerMixin{
   final String id;
+  final String token;
   final String email;
   final String password;
   final String firsname;
@@ -29,6 +32,7 @@ class UserEducator {
 
   UserEducator({
     this.id,
+    this.token,
     this.email,
     this.password,
     this.firsname,
@@ -81,8 +85,88 @@ class UserEducator {
       connection: doc['connection'] ?? '',
       firebase_token: doc['firebase_token'],
     );
-
+  }
+  factory UserEducator.fromJson(Map<String, dynamic> json) {
+    return new UserEducator(
+        token: json['token'] ,
+        email: json['email'] ,
+        password: json['password'],
+        firsname: json['firsname'],
+        lastname: json['lastname'],
+        middlename: json['middlename'] ,
+        suffix: json['suffix'] ,
+        gender: json['gender']  ,
+        contact_number: json['contact_number'],
+        profileImageUrl: json['profileImageUrl'] ,
+        educational_attainment: json['educational_attainment'],
+        subj_major: json['subj_major'] ,
+        current_school: json['current_school'] ,
+        position: json['position'] ,
+        facebook: json['facebook'] ,
+        instagram: json['instagram'] ,
+        twitter: json['twitter'] ,
+        gmail: json['gmail']  ,
+        motto: json['motto'] ,
+        user_activation: json['user_activation'] ,
+        user_role: json['user_role']  ,
+        validated: json['validated']  ,
+        connection: json['connection']  ,
+        firebase_token: json['firebase_token']
+    );
   }
 
+}
 
+abstract class _$UserSerializerMixin {
+  String get token;
+  String get email;
+  String get password;
+  String get firsname;
+  String get lastname;
+  String get middlename;
+  String get suffix;
+  String get gender;
+  String get contact_number;
+  String get profileImageUrl;
+  String get educational_attainment;
+  String get subj_major;
+  String get current_school;
+  String get position;
+  String get facebook;
+  String get instagram;
+  String get twitter;
+  String get gmail;
+  String get motto;
+  String get user_activation;
+  String get user_role;
+  String get validated;
+  String get connection;
+  String get firebase_token;
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'token': token,
+    'email': email,
+    'password': password,
+    'firsname': firsname,
+    'lastname': lastname,
+    'middlename': middlename,
+    'suffix': suffix,
+    'gender': gender,
+    'contact_number': contact_number,
+    'profileImageUrl': profileImageUrl,
+    'educational_attainment': educational_attainment,
+    'subj_major': subj_major,
+    'current_school': current_school,
+    'position': position,
+    'facebook': facebook,
+    'instagram': instagram,
+    'twitter': twitter,
+    'gmail': gmail,
+    'motto': motto,
+    'user_activation': user_activation,
+    'user_role': user_role,
+    'validated': validated,
+    'connection': connection,
+    'firebase_token': firebase_token
+  };
 }

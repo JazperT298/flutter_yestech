@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_yestech/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -8,6 +10,11 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+
+  initAuthProvider(context) async {
+    Provider.of<AuthProvider>(context).initAuthProvider();
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -17,6 +24,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    initAuthProvider(context);
+
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,

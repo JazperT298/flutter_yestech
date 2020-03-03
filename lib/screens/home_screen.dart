@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_yestech/models/user_data.dart';
+import 'package:flutter_yestech/providers/auth_provider.dart';
 import 'package:flutter_yestech/screens/chat_screen.dart';
 import 'package:flutter_yestech/screens/dashboard_screen.dart';
 import 'package:flutter_yestech/screens/feed_screen.dart';
@@ -31,8 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final String currentUserId = Provider.of<UserData> (context).currentUserId;
-    print( Provider.of<UserData>(context).currentUserId);
+    final String currentUserId = Provider.of<AuthProvider> (context).currentUserId;
+    print( Provider.of<AuthProvider>(context).currentUserId);
     return Scaffold(
       body: PageView(
         controller: _pageController,

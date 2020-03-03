@@ -95,7 +95,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         profileImageUrl: _profileImageUrl,
       );
       //Database update
-      DatabaseService.updateUser(userEducator);
+      DatabaseService.updateUserEducator(userEducator);
       Navigator.pop(context);
     }
   }

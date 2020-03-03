@@ -2,12 +2,13 @@ import 'dart:core';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_yestech/models/user/user_educator.dart';
+import 'package:flutter_yestech/models/user/user_student.dart';
 import 'package:flutter_yestech/models/user_models.dart';
 import 'package:flutter_yestech/utils/constant.dart';
 
 class DatabaseService {
-  static void updateUser(UserEducator userEducator){
-    usersRef.document(userEducator.id).updateData({
+  static void updateUserEducator(UserEducator userEducator){
+    usersEducRef.document(userEducator.id).updateData({
       'firsname': userEducator.firsname,
       'lastname': userEducator.lastname,
       'middlename': userEducator.middlename,
@@ -27,22 +28,41 @@ class DatabaseService {
     });
   }
 
-  static Future<QuerySnapshot> searchUsers(String name) {
-    Future<QuerySnapshot> users = usersRef.where('lastname', isGreaterThanOrEqualTo: name).getDocuments();
+  static Future<QuerySnapshot> searchUserEducator(String name) {
+    Future<QuerySnapshot> users = usersEducRef.where('lastname', isGreaterThanOrEqualTo: name).getDocuments();
     return users;
   }
 
-  static Future<QuerySnapshot> getAllUsers() {
-    Future<QuerySnapshot> users = usersRef.getDocuments();
+  static Future<QuerySnapshot> getAllUserEducator() {
+    Future<QuerySnapshot> users = usersEducRef.getDocuments();
     return users;
   }
 
-  static Future<UserEducator> getUserWithId(String userId) async {
-    DocumentSnapshot userDocSnapShot = await usersRef.document(userId).get();
+  static Future<UserEducator> getUserEducatorWithId(String userId) async {
+    DocumentSnapshot userDocSnapShot = await usersEducRef.document(userId).get();
 
     if (userDocSnapShot.exists){
       return UserEducator.fromDoc(userDocSnapShot);
     }
     return UserEducator();
+  }
+
+  static Future<QuerySnapshot> searchUserStudent(String name) {
+    Future<QuerySnapshot> users = usersStudRef.where('lastname', isGreaterThanOrEqualTo: name).getDocuments();
+    return users;
+  }
+
+  static Future<QuerySnapshot> getAllUserStudent() {
+    Future<QuerySnapshot> users = usersStudRef.getDocuments();
+    return users;
+  }
+
+  static Future<UserStudent> getUserStudentWithId(String userId) async {
+    DocumentSnapshot userDocSnapShot = await usersStudRef.document(userId).get();
+
+    if (userDocSnapShot.exists){
+      return UserStudent.fromDoc(userDocSnapShot);
+    }
+    return UserStudent();
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_yestech/providers/auth_provider.dart';
 import 'package:flutter_yestech/screens/login_screen.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:provider/provider.dart';
 
 class StartScreen extends StatefulWidget {
 
@@ -15,8 +17,15 @@ class _StartScreenState extends State<StartScreen> {
   String fuck = 'http://192.168.1.11/yes_tech/controllerClass/controller_educator/register_as_educator_class.php';
   final _minimumPadding = 5.0;
 
+  initAuthProvider(context) async {
+    Provider.of<AuthProvider>(context).initAuthProvider();
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    initAuthProvider(context);
+
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
@@ -54,7 +63,10 @@ class _StartScreenState extends State<StartScreen> {
                         child: SizedBox(
                           height: 80.0,
                           child: FlatButton(
-                            onPressed: () => Navigator.pushReplacementNamed(context, LoginScreen.id),
+                            onPressed: () => Navigator.push(context, MaterialPageRoute(
+                                builder: (BuildContext context) => LoginScreen(roleId: '1')
+                              )
+                            ),
                             child: Row(
                               children: <Widget>[
                                 Expanded(
@@ -91,7 +103,9 @@ class _StartScreenState extends State<StartScreen> {
                         child: SizedBox(
                           height: 80.0,
                           child: FlatButton(
-                            onPressed: () => Navigator.pushReplacementNamed(context, LoginScreen.id),
+                            onPressed: () => Navigator.push(context, MaterialPageRoute(
+                                builder: (BuildContext context) => LoginScreen(roleId: '2')
+                            )),
                             child: Row(
                               children: <Widget>[
                                 Expanded(

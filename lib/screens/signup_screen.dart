@@ -1,35 +1,83 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
+import 'package:flutter_yestech/customviews/progress_dialog.dart';
+import 'package:flutter_yestech/providers/auth_provider.dart';
+import 'package:flutter_yestech/screens/login_screen.dart';
 import 'package:flutter_yestech/services/auth_service.dart';
+import 'package:flutter_yestech/utils/constant.dart';
 import 'package:flutter_yestech/utils/network_image.dart';
 import 'package:flutter_yestech/utils/styles.dart';
+import 'package:provider/provider.dart';
 
 import 'package:toast/toast.dart';
 
 class SignupScreen extends StatefulWidget {
-
   static final String id = 'signup_screen';
 
+  final String roleId;
 
+  const SignupScreen({Key key, this.roleId}) : super(key: key);
   @override
   _SignupScreenState createState() => _SignupScreenState();
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-
   final _formKey = GlobalKey<FormState>();
   String _email, _password;
+  String _message = '';
+
+  Map response = new Map();
 
   final image = "assets/images/the_yes_logo.png";
 
-  _registerUser() {
-    if (_formKey.currentState.validate()){
+  @override
+  void initState() {
+    super.initState();
+    print(widget.roleId);
+  }
+
+  //Register Educator from API and Firebase
+  Future<void> _registerUserEducator() async {
+    if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      print(_email);
-      print(_password);
-      AuthService.signUpUser(context, _email, _password);
-      showToast("Successfully Registered", duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+
+      response = await Provider.of<AuthProvider>(context)
+          .registerEducator(_email, _password);
+      if (response['success_educator']) {
+        AuthService.signUpEducator(context, _email, _password);
+        Navigator.push(context, MaterialPageRoute(
+            builder: (BuildContext context) => LoginScreen(roleId: widget.roleId)
+          )
+        );
+        Navigator.pop(context);
+      } else {
+        setState(() {
+          _message = response['message'];
+        });
+      }
+    }
+  }
+
+  //Register Student from API and Firebase
+  Future<void> _registerUserStudent() async {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+
+      response = await Provider.of<AuthProvider>(context)
+          .registerStudent(_email, _password);
+      if (response['success']) {
+        AuthService.signUpStudent(context, _email, _password);
+        Navigator.push(context, MaterialPageRoute(
+            builder: (BuildContext context) => LoginScreen(roleId: widget.roleId)
+          )
+        );
+        Navigator.pop(context);
+      } else {
+        setState(() {
+          _message = response['message'];
+        });
+      }
     }
   }
 
@@ -149,7 +197,8 @@ class _SignupScreenState extends State<SignupScreen> {
             child: Align(
               alignment: Alignment.bottomCenter,
               child: RaisedButton(
-                onPressed: _registerUser,
+                // ignore: unrelated_type_equality_checks
+                onPressed: checkUserId ,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0)),
                 child: Text("Sign Up", style: TextStyle(color: Colors.white70)),
                 color: Colors.blue,
@@ -171,6 +220,14 @@ class _SignupScreenState extends State<SignupScreen> {
   void showToast(String msg, {int duration, int gravity}) {
     Toast.show(msg, context, duration: duration, gravity: gravity);
   }
+  void checkUserId(){
+    if (widget.roleId == '1'){
+      _registerUserStudent();
+    }else if (widget.roleId == '2'){
+      _registerUserEducator();
+    }
+  }
+
 
 //  Widget _buildEmailTF() {
 //    return Column(

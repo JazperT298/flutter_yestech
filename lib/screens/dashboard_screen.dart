@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_yestech/models/user/user_educator.dart';
 import 'package:flutter_yestech/models/user_data.dart';
 import 'package:flutter_yestech/models/user_models.dart';
+import 'package:flutter_yestech/providers/auth_provider.dart';
 import 'package:flutter_yestech/screens/feed_screen.dart';
 import 'package:flutter_yestech/screens/profile_screen.dart';
 import 'package:flutter_yestech/screens/quiz_screen.dart';
@@ -35,7 +36,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   _setupProfileUser() async {
-    UserEducator profileUser = await DatabaseService.getUserWithId(widget.userId);
+    UserEducator profileUser = await DatabaseService.getUserEducatorWithId(widget.userId);
     setState(() {
       _profileUser = profileUser;
       print('_profileUser  $profileUser');
@@ -47,7 +48,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: FutureBuilder(
-          future: usersRef.document(widget.userId).get(),
+          future: usersEducRef.document(widget.userId).get(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
               return Center(
@@ -62,7 +63,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
   Widget _buildBody(BuildContext context,UserEducator user ) {
-    final String currentUserId = Provider.of<UserData> (context).currentUserId;
+    final String currentUserId = Provider.of<AuthProvider> (context).currentUserId;
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -307,7 +308,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Container _buildHeader(UserEducator user) {
-    final String currentUserId = Provider.of<UserData> (context).currentUserId;
+    final String currentUserId = Provider.of<AuthProvider> (context).currentUserId;
     return Container(
       padding: const EdgeInsets.fromLTRB(0, 50.0, 0, 32.0),
       decoration: BoxDecoration(

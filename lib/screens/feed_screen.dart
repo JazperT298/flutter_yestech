@@ -40,7 +40,7 @@ class _FeedScreenState extends State<FeedScreen> {
     });
   }
   _setupProfileUser() async {
-    UserEducator profileUser = await DatabaseService.getUserWithId(widget.userId);
+    UserEducator profileUser = await DatabaseService.getUserEducatorWithId(widget.userId);
     setState(() {
       _profileUser = profileUser;
     });
@@ -52,7 +52,7 @@ class _FeedScreenState extends State<FeedScreen> {
     return Scaffold(
       appBar: AppBar(
         title: FutureBuilder(
-        future: usersRef.document(widget.userId).get(),
+        future: usersEducRef.document(widget.userId).get(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData) {
             return Center(
@@ -111,7 +111,7 @@ class _FeedScreenState extends State<FeedScreen> {
       ),
       body: _posts.length > 0 ?
       FutureBuilder(
-        future: usersRef.document(widget.userId).get(),
+        future: usersEducRef.document(widget.userId).get(),
         builder: (BuildContext context, AsyncSnapshot snapshot){
           if (!snapshot.hasData){
             return Center(

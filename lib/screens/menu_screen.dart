@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_yestech/providers/auth_provider.dart';
 import 'package:flutter_yestech/services/auth_service.dart';
+import 'package:provider/provider.dart';
 
 class MenuScreen extends StatefulWidget {
   @override
@@ -212,7 +214,11 @@ class _MenuScreenState extends State<MenuScreen> {
                                 icon: Icon(Icons.exit_to_app),
                                 color: Colors.indigoAccent,
                                 iconSize: 40.0,
-                                onPressed: () => AuthService.logout(),
+                                onPressed: () {
+                                  Provider.of<AuthProvider>(context).logOut();
+                                  AuthService.logoutEducator();
+                                  Navigator.pop(context);
+                                }
                               ),
                             ),
                             SizedBox(height: 8.0,),

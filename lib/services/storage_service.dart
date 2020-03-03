@@ -17,7 +17,7 @@ class StorageService {
       photoId = exp.firstMatch(url)[1];
       print(photoId);
     }
-    StorageUploadTask uploadTask = storageRef.child('images/users/userProfile_$photoId.jpg').putFile(image);
+    StorageUploadTask uploadTask = storageRef.child('images/userEducator/userProfile_$photoId.jpg').putFile(image);
     StorageTaskSnapshot snapshot = await uploadTask.onComplete;
     String downloadUrl = await snapshot.ref.getDownloadURL();
     return downloadUrl;
