@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
         controller: _pageController,
         children: <Widget>[
           DashboardScreen(currentUserId: currentUserId,userId : currentUserId,),
-          ChatScreen(),
+          ChatScreen(currentUserId: currentUserId,userId : currentUserId,),
           RankScreen(),
           NotificationScreen(),
           MenuScreen(),

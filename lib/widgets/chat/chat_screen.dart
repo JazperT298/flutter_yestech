@@ -1,20 +1,32 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_yestech/models/chat/message.dart';
 import 'package:flutter_yestech/models/chat/user_model.dart';
+import 'package:flutter_yestech/models/user/users.dart';
+import 'package:flutter_yestech/services/database_service.dart';
 
-class ChatScreen extends StatefulWidget {
+class ChatScreens extends StatefulWidget {
 
-  final User user;
+  final Users users;
 
-  ChatScreen({this.user});
+  ChatScreens({this.users});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
 
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends State<ChatScreens> {
+  final image = 'https://scontent.fcgy1-1.fna.fbcdn.net/v/t31.0-8/p960x960/30168022_1897484493619658_4342911855731560664_o.jpg?_nc_cat=104&_nc_sid=7aed08&_nc_ohc=y2wtn9SPDBAAX9b7pQC&_nc_ht=scontent.fcgy1-1.fna&_nc_tp=6&oh=ddfb6d6aa1cc075ca31b4936b06f4d60&oe=5EEE308A';
+
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+
   _buildMessage(Message message, bool isMe){
     final Container msg =  Container(
       margin: isMe
@@ -23,7 +35,7 @@ class _ChatScreenState extends State<ChatScreen> {
       padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
       width: MediaQuery.of(context).size.width * 0.75,
       decoration: BoxDecoration(
-        color: isMe ? Theme.of(context).accentColor : Color(0xFFFFEFEE),
+        color: isMe ? Theme.of(context).accentColor : Colors.grey,
         borderRadius: isMe ? BorderRadius.only(
           topLeft: Radius.circular(15.0),
           bottomLeft: Radius.circular(15.0),
@@ -44,7 +56,7 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
           SizedBox(height: 15.0),
-          Text (message.text),
+          Text (message.message),
         ],
       ),
     );
@@ -105,11 +117,13 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
-        title: Text(
-          widget.user.name,
-          style: TextStyle(
-            fontSize: 28.0,
-            fontWeight: FontWeight.bold,
+        title: Container(
+          child: CircleAvatar(
+            radius: 20.0,
+            backgroundImage: widget.users.profileImageUrl.isEmpty
+                ? CachedNetworkImageProvider(image)
+                : CachedNetworkImageProvider(
+                widget.users.profileImageUrl),
           ),
         ),
         elevation: 0.0,

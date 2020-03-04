@@ -28,8 +28,8 @@ class RecentChats extends StatelessWidget {
                 onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => ChatScreen(
-                        user: chat.sender,
+                      builder: (_) => ChatScreens(
+                        users: chat.sender,
                       ),
                     )
                 ),
@@ -48,7 +48,7 @@ class RecentChats extends StatelessWidget {
                     children: <Widget>[
                       Row(
                         children: <Widget>[
-                          CircleAvatar(radius: 35.0, backgroundImage: AssetImage(chat.sender.imageUrl),
+                          CircleAvatar(radius: 35.0, backgroundImage: AssetImage(chat.sender.profileImageUrl),
                           ),
                           SizedBox(
                             width: 10.0,
@@ -57,7 +57,7 @@ class RecentChats extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text (
-                                chat.sender.name,
+                                chat.sender.email,
                                 style: TextStyle (color: Colors.grey, fontSize: 13.0, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
@@ -66,7 +66,7 @@ class RecentChats extends StatelessWidget {
                               Container(
                                 width: MediaQuery.of(context).size.width * 0.45,
                                 child: Text(
-                                  chat.text,
+                                  chat.message,
                                   style: TextStyle (color: Colors.blueGrey, fontSize: 13.0, fontWeight: FontWeight.w600),
                                   overflow: TextOverflow.ellipsis,
                                 ),

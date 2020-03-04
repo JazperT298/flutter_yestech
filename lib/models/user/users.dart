@@ -86,6 +86,34 @@ class Users extends Object with _$UserSerializerMixin{
       firebase_token: doc['firebase_token'],
     );
   }
+
+  factory Users.fromMap(Map<String, dynamic> map){
+    return Users(
+      email: map['email'],
+      password: map['password'],
+      firsname: map['firsname'],
+      lastname: map['lastname'],
+      middlename: map['middlename'],
+      suffix: map['suffix']?? '',
+      gender: map['gender'] ?? '',
+      contact_number: map['contact_number'] ?? '',
+      profileImageUrl: map['profileImageUrl'] ?? '',
+      educational_attainment: map['educational_attainment'] ?? '',
+      subj_major: map['subj_major'] ?? '',
+      current_school: map['current_school'] ?? '',
+      position: map['position'] ?? '',
+      facebook: map['facebook'] ?? '',
+      instagram: map['instagram'] ?? '',
+      twitter: map['twitter'] ?? '',
+      gmail: map['gmail'] ?? '',
+      motto: map['motto'] ?? '',
+      user_activation: map['user_activation'] ?? '',
+      user_role: map['user_role'] ?? '',
+      validated: map['validated'] ?? '',
+      connection: map['connection'] ?? '',
+      firebase_token: map['firebase_token'],
+    );
+  }
   factory Users.fromJson(Map<String, dynamic> json) {
     return new Users(
         token: json['token'] ,

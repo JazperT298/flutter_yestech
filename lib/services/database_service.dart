@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:core';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_yestech/models/user/user_educator.dart';
 import 'package:flutter_yestech/models/user/user_student.dart';
 import 'package:flutter_yestech/models/user/users.dart';
@@ -34,8 +36,16 @@ class DatabaseService {
     return users;
   }
 
-  static Future<QuerySnapshot> getAllUsers() {
-    Future<QuerySnapshot> users = usersRef.getDocuments();
+//  static Future<QuerySnapshot> getAllUsers() {
+//    Future<QuerySnapshot> users = usersRef.getDocuments();
+//    return users;
+//  }
+
+  static Future<List<Users>> getAllUsers () async {
+    QuerySnapshot userActivitiesSnapshot = await Firestore.instance
+        .collection('users')
+        .getDocuments();
+    List<Users> users = userActivitiesSnapshot.documents.map((doc) => Users.fromDoc(doc)).toList();
     return users;
   }
 
