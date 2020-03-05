@@ -1,11 +1,45 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_yestech/models/chat/chat_model.dart';
 import 'package:flutter_yestech/models/chat/message.dart';
+import 'package:flutter_yestech/models/user/users.dart';
+import 'package:flutter_yestech/services/database_service.dart';
 import 'package:flutter_yestech/widgets/chat/chat_screen.dart';
 
-class RecentChats extends StatelessWidget {
+class RecentChats extends StatefulWidget {
+  final Users users;
+  final String currentUserId;
+  final String userId;
+
+  RecentChats({this.users, this.currentUserId, this.userId});
+  @override
+  _RecentChatsState createState() => _RecentChatsState();
+}
+
+
+class _RecentChatsState extends State<RecentChats> {
+
+  final image = 'https://scontent.fcgy1-1.fna.fbcdn.net/v/t31.0-8/p960x960/30168022_1897484493619658_4342911855731560664_o.jpg?_nc_cat=104&_nc_sid=7aed08&_nc_ohc=y2wtn9SPDBAAX9b7pQC&_nc_ht=scontent.fcgy1-1.fna&_nc_tp=6&oh=ddfb6d6aa1cc075ca31b4936b06f4d60&oe=5EEE308A';
+
+  List<Chat> _chats = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _setupChats();
+  }
+
+  _setupChats() async {
+    List<Chat> chats = await DatabaseService.getAllChats(widget.userId);
+    setState(() {
+      _chats = chats;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    print(_chats.length);
      return Expanded(
       child: Container(
         decoration: BoxDecoration(

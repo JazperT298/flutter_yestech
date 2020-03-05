@@ -3,6 +3,7 @@ import 'dart:core';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_yestech/models/chat/chat_model.dart';
 import 'package:flutter_yestech/models/user/user_educator.dart';
 import 'package:flutter_yestech/models/user/user_student.dart';
 import 'package:flutter_yestech/models/user/users.dart';
@@ -56,6 +57,36 @@ class DatabaseService {
       return Users.fromDoc(userDocSnapShot);
     }
     return Users();
+  }
+
+  static void createChat(Chat chat) {
+    chatsRef.document(chat.receiver).collection('chats').add({
+      'sender': chat.sender,
+      'receiver': chat.receiver,
+      'message': chat.message,
+      'time': chat.time,
+      'unread': chat.unread,
+    });
+  }
+
+  static Future<List<Chat>> getUserChat(String userId) async{
+    QuerySnapshot userChatSnapShot = await chatsRef
+        .document(userId)
+        .collection('chats')
+        .orderBy('time', descending: true)
+        .getDocuments();
+
+    List<Chat> chats = userChatSnapShot.documents.map((doc) => Chat.fromDoc(doc)).toList();
+
+    return chats;
+  }
+  static Future<List<Chat>> getAllChats (String userId) async {
+    QuerySnapshot userActivitiesSnapshot = await chatsRef
+        .document(userId)
+        .collection('chats')
+        .getDocuments();
+    List<Chat> users = userActivitiesSnapshot.documents.map((doc) => Chat.fromDoc(doc)).toList();
+    return users;
   }
 
 }

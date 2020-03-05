@@ -181,9 +181,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
                     child: _buildTile(
-                      color: Colors.pink,
-                      icon: Icons.local_post_office,
-                      title: "Post",
+                      color: Colors.red,
+                      icon: Icons.subject,
+                      title: "Subjects",
                       data: "1200",
                     ),
                   ),
@@ -193,9 +193,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: GestureDetector(
                     onTap: () => showToast("Show Topics Toast", gravity: Toast.BOTTOM),
                     child: _buildTile(
-                      color: Colors.green,
-                      icon: Icons.details,
-                      title: "Topics",
+                      color: Colors.purple,
+                      icon: Icons.note,
+                      title: "Notes",
                       data: "857",
                     ),
                   ),
@@ -212,9 +212,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: GestureDetector(
                     onTap: () => showToast("Show Subjects Toast", gravity: Toast.BOTTOM),
                     child: _buildTile(
-                      color: Colors.blue,
-                      icon: Icons.subject,
-                      title: "Subjects",
+                      color: Colors.deepOrangeAccent,
+                      icon: Icons.language,
+                      title: "Connections",
                       data: "864",
                     ),
                   ),
@@ -225,14 +225,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => QuizScreen(
+                        builder: (_) => FeedScreen(
+                          currentUserId: currentUserId,
+                          userId : currentUserId,
                         ),
                       ),
                     ),
                     child: _buildTile(
-                      color: Colors.pink,
-                      icon: Icons.bookmark,
-                      title: "Quizzes",
+                      color: Colors.green,
+                      icon: Icons.assignment,
+                      title: "NewFeeds",
                       data: "857",
                     ),
                   ),
@@ -248,9 +250,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
                     child: _buildTile(
-                      color: Colors.blue,
-                      icon: Icons.assessment,
-                      title: "Assessment",
+                      color: Colors.indigo,
+                      icon: Icons.video_library,
+                      title: "Video Lab",
                       data: "698",
                     ),
                   ),
@@ -267,9 +269,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: GestureDetector(
                     onTap: () => showToast("Show Notes Toast", gravity: Toast.BOTTOM),
                     child: _buildTile(
-                      color: Colors.yellowAccent,
-                      icon: Icons.filter_frames,
-                      title: "Notes",
+                      color: Colors.lightBlue,
+                      icon: Icons.payment,
+                      title: "Courses",
                       data: "900",
                     ),
                   ),
@@ -279,9 +281,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: GestureDetector(
                     onTap: () => showToast("Show Announcement Toast", gravity: Toast.BOTTOM),
                     child: _buildTile(
-                      color: Colors.purple,
-                      icon: Icons.announcement,
-                      title: "Announcement",
+                      color: Colors.lightGreen,
+                      icon: Icons.ondemand_video,
+                      title: "My Videos",
                       data: "857",
                     ),
                   ),

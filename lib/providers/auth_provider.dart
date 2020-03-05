@@ -21,7 +21,7 @@ class AuthProvider with ChangeNotifier {
   String get token => _token;
   NotificationText get notification => _notification;
 
-  final String api = 'http://192.168.1.11/yes_tech/controllerClass';
+  final String api = 'http://192.168.1.6/yes_tech/controllerClass';
 
   ProgressDialog progressDialog =
   ProgressDialog.getProgressDialog(ProgressDialogTitles.USER_LOG_IN);

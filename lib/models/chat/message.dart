@@ -4,12 +4,13 @@ import 'package:flutter_yestech/services/database_service.dart';
 
 class Message {
   final Users sender;
+  final Users receiver;
   final String time;
   final String message;
   final bool isLiked;
   final bool unread;
 
-  Message({ this.sender, this.time, this.message, this.isLiked, this.unread });
+  Message({ this.sender, this.receiver, this.time, this.message, this.isLiked, this.unread });
 
 }
   // You - current user

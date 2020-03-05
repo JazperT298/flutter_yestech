@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_yestech/models/chat/chat_model.dart';
 import 'package:flutter_yestech/models/user/users.dart';
 import 'package:flutter_yestech/services/database_service.dart';
 import 'package:flutter_yestech/widgets/chat/category_selector.dart';
@@ -10,11 +11,11 @@ import 'package:flutter_yestech/widgets/chat/chat_screen.dart';
 class ChatScreen extends StatefulWidget {
 
   static final String id = 'chat_screen';
-
+  final Users users;
   final String currentUserId;
   final String userId;
 
-  ChatScreen({this.currentUserId, this.userId});
+  ChatScreen({this.users, this.currentUserId, this.userId});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -24,6 +25,8 @@ class _ChatScreenState extends State<ChatScreen> {
   final image = 'https://scontent.fcgy1-1.fna.fbcdn.net/v/t31.0-8/p960x960/30168022_1897484493619658_4342911855731560664_o.jpg?_nc_cat=104&_nc_sid=7aed08&_nc_ohc=y2wtn9SPDBAAX9b7pQC&_nc_ht=scontent.fcgy1-1.fna&_nc_tp=6&oh=ddfb6d6aa1cc075ca31b4936b06f4d60&oe=5EEE308A';
 
   List<Users> _users = [];
+  List<Chat> _chats = [];
+  Users users;
 
   @override
   void initState() {
@@ -36,12 +39,12 @@ class _ChatScreenState extends State<ChatScreen> {
       _users = users;
     });
   }
-
   @override
   Widget build(BuildContext context) {
     print('number of users :');
     print(_users.length);
     print('FUCKING WHORE SHIT NIGGA');
+    print(widget.userId);
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
@@ -119,7 +122,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (_) => ChatScreens(
-                                          users: _users[index],
+                                          users: _users[index], userId: widget.userId, currentUserId: widget.currentUserId,
                                         ),
                                       )
                                   ),
@@ -153,7 +156,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       ],
                     ),
                   ),
-                  RecentChats(),
+                  RecentChats(users: users, userId: widget.userId, currentUserId: widget.currentUserId,),
                 ],
               ),
             ),

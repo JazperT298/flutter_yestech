@@ -24,6 +24,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
   @override
   void initState() {
     super.initState();
+    print(widget.userId);
   }
 
   @override
