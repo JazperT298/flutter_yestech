@@ -10,6 +10,12 @@ import 'package:flutter_yestech/screens/profile_screen.dart';
 import 'package:flutter_yestech/screens/quiz_screen.dart';
 import 'package:flutter_yestech/services/database_service.dart';
 import 'package:flutter_yestech/utils/constant.dart';
+import 'package:flutter_yestech/widgets/dashboard/connections/connections_screen.dart';
+import 'package:flutter_yestech/widgets/dashboard/courses/courses_screen.dart';
+import 'package:flutter_yestech/widgets/dashboard/myvideos/myvideos_screen.dart';
+import 'package:flutter_yestech/widgets/dashboard/notes/notes_screen.dart';
+import 'package:flutter_yestech/widgets/dashboard/subjects/subject_screen.dart';
+import 'package:flutter_yestech/widgets/dashboard/videolab/videolab_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
 
@@ -174,10 +180,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => FeedScreen(
-                          currentUserId: currentUserId,
-                          userId : currentUserId,
-                        ),
+                        builder: (_) => SubjectScreen(),
                       ),
                     ),
                     child: _buildTile(
@@ -191,7 +194,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const SizedBox(width: 16.0),
                 Expanded(
                   child: GestureDetector(
-                    onTap: () => showToast("Show Topics Toast", gravity: Toast.BOTTOM),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => NotesScreen(),
+                      ),
+                    ),
                     child: _buildTile(
                       color: Colors.purple,
                       icon: Icons.note,
@@ -210,7 +218,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: <Widget>[
                 Expanded(
                   child: GestureDetector(
-                    onTap: () => showToast("Show Subjects Toast", gravity: Toast.BOTTOM),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ConnectionScreen(),
+                      ),
+                    ),
                     child: _buildTile(
                       color: Colors.deepOrangeAccent,
                       icon: Icons.language,
@@ -245,7 +258,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => QuizScreen(
+                        builder: (_) => VideolabScreen(
                         ),
                       ),
                     ),
@@ -267,7 +280,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: <Widget>[
                 Expanded(
                   child: GestureDetector(
-                    onTap: () => showToast("Show Notes Toast", gravity: Toast.BOTTOM),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => CoursesScreen(),
+                      ),
+                    ),
                     child: _buildTile(
                       color: Colors.lightBlue,
                       icon: Icons.payment,
@@ -279,7 +297,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const SizedBox(width: 16.0),
                 Expanded(
                   child: GestureDetector(
-                    onTap: () => showToast("Show Announcement Toast", gravity: Toast.BOTTOM),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => MyVideosScreen(),
+                      ),
+                    ),
                     child: _buildTile(
                       color: Colors.lightGreen,
                       icon: Icons.ondemand_video,
