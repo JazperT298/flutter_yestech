@@ -38,8 +38,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    print('FUCKSHIT');
     _setupProfileUser();
-    print('dashboard  $widget.userId');
+    _getUserId();
+    print(widget.userId);
   }
 
   _setupProfileUser() async {
@@ -50,19 +52,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
+  _getUserId() async{
+    String token = await AuthProvider.getUserId();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: FutureBuilder(
-          future: usersRef.document(widget.userId).get(),
+          future: AuthProvider.getUserId(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
               return Center(
                 child: CircularProgressIndicator(),
               );
             }
-            Users user = Users.fromDoc(snapshot.data);
+            Users user = Users.fromMap(snapshot.data);
             return _buildBody(context, user);
           }),
 

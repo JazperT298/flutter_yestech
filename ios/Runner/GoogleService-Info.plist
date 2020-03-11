@@ -3,21 +3,23 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>10208327593-je4u4v8g8ugo5sosh8dlus5d1rv600p8.apps.googleusercontent.com</string>
+	<string>701742442702-kjo5qu3ubtaeqjqrv0csde4o2qa07l3g.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.10208327593-je4u4v8g8ugo5sosh8dlus5d1rv600p8</string>
+	<string>com.googleusercontent.apps.701742442702-kjo5qu3ubtaeqjqrv0csde4o2qa07l3g</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>701742442702-7gh04j69kabl0rken56ju8natemuak7t.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDidG8OWBdcNjL8tshS5ccaom1fA0yjBkM</string>
+	<string>AIzaSyDfBtDCtUxrKgYGT_In9ncC3-Jl32EE62M</string>
 	<key>GCM_SENDER_ID</key>
-	<string>10208327593</string>
+	<string>701742442702</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.example.flutteryestech</string>
 	<key>PROJECT_ID</key>
-	<string>flutter-yestech</string>
+	<string>yesmobile-86b5d</string>
 	<key>STORAGE_BUCKET</key>
-	<string>flutter-yestech.appspot.com</string>
+	<string>yesmobile-86b5d.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,8 +31,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:10208327593:ios:16fcfc077f58b605b3f6b8</string>
+	<string>1:701742442702:ios:5de04f5aa81fa25f7b489f</string>
 	<key>DATABASE_URL</key>
-	<string>https://flutter-yestech.firebaseio.com</string>
+	<string>https://yesmobile-86b5d.firebaseio.com</string>
 </dict>
 </plist>

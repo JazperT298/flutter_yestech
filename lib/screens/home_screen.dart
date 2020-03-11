@@ -40,8 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           DashboardScreen(currentUserId: currentUserId,userId : currentUserId,),
           ChatScreen(currentUserId: currentUserId,userId : currentUserId,),
-          RankScreen(),
-          NotificationScreen(),
+//          RankScreen(),
+//          NotificationScreen(),
           MenuScreen(),
         ],
         onPageChanged: (int index) {
@@ -72,18 +72,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 size: 32.0,
               ),
             ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.multiline_chart,
-                size: 32.0,
-              ),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.notifications,
-                size: 32.0,
-              ),
-            ),
+//            BottomNavigationBarItem(
+//              icon: Icon(
+//                Icons.multiline_chart,
+//                size: 32.0,
+//              ),
+//            ),
+//            BottomNavigationBarItem(
+//              icon: Icon(
+//                Icons.notifications,
+//                size: 32.0,
+//              ),
+//            ),
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.menu,

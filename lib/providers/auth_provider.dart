@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_yestech/customviews/progress_dialog.dart';
 import 'package:flutter_yestech/models/user/user_educator.dart';
+import 'package:flutter_yestech/models/user/users.dart';
 import 'package:flutter_yestech/services/auth_service.dart';
 import 'package:flutter_yestech/utils/constant.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -56,7 +57,14 @@ class AuthProvider with ChangeNotifier {
       Map<String, dynamic>  apiResponse = json.decode(response.body.substring(1, response.body .length-1));
       _status = Status.Authenticated;
       _token = apiResponse['user_token'];
-      print(_token);
+
+      Users users = Users();
+      users.id = apiResponse['user_id'];
+      users.token = apiResponse['user_token'];
+
+
+      print(users.id);
+      print(users.token);
       await storeUsersData(apiResponse);
       notifyListeners();
       //progressDialog.hideProgress();
@@ -101,6 +109,11 @@ class AuthProvider with ChangeNotifier {
       Map<String, dynamic>  apiResponse = json.decode(response.body.substring(1, response.body .length-1));
       _status = Status.Authenticated;
       _token = apiResponse['user_token'];
+
+      Users users = Users();
+      users.id = apiResponse['user_id'];
+      users.token = apiResponse['user_token'];
+
       await storeUsersData(apiResponse);
       notifyListeners();
       AuthService.loginUsers(context, email, password);
@@ -233,8 +246,32 @@ class AuthProvider with ChangeNotifier {
 
   storeUsersData(apiResponse) async {
     SharedPreferences storage = await SharedPreferences.getInstance();
+    await storage.setString('user_id', apiResponse['user_id']);
     await storage.setString('user_token', apiResponse['user_token']);
-//    await storage.setString('user_email_address', apiResponse['tbl_users']['user_email_address']);
+    await storage.setString('user_code', apiResponse['user_code']);
+    await storage.setString('user_email_address', apiResponse['user_email_address']);
+    await storage.setString('user_contact_number', apiResponse['user_contact_number']);
+    await storage.setString('user_password', apiResponse['user_password']);
+    await storage.setString('user_firstname', apiResponse['user_firstname']);
+    await storage.setString('user_lastname', apiResponse['user_lastname']);
+    await storage.setString('user_middlename', apiResponse['user_middlename']);
+    await storage.setString('user_suffixes', apiResponse['user_suffixes']);
+    await storage.setString('user_gender', apiResponse['user_gender']);
+    await storage.setString('user_image', apiResponse['user_image']);
+    await storage.setString('user_educational_attainment', apiResponse['user_educational_attainment']);
+    await storage.setString('user_subj_major', apiResponse['user_subj_major']);
+    await storage.setString('user_current_school', apiResponse['user_current_school']);
+    await storage.setString('user_position', apiResponse['user_position']);
+    await storage.setString('user_activation', apiResponse['user_activation']);
+    await storage.setString('validated', apiResponse['validated']);
+    await storage.setString('user_role', apiResponse['user_role']);
+    await storage.setString('user_facebook', apiResponse['user_facebook']);
+    await storage.setString('user_twitter', apiResponse['user_twitter']);
+    await storage.setString('user_instagram', apiResponse['user_instagram']);
+    await storage.setString('user_gmail', apiResponse['user_gmail']);
+    await storage.setString('user_motto', apiResponse['user_motto']);
+    await storage.setString('user_nickname', apiResponse['user_nickname']);
+    await storage.setString('user_dreamjob', apiResponse['user_dreamjob']);
   }
 
 
@@ -242,6 +279,12 @@ class AuthProvider with ChangeNotifier {
     SharedPreferences storage = await SharedPreferences.getInstance();
     String token = storage.getString('user_token');
     return token;
+  }
+
+  static Future<String> getUserId() async {
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    String user_id = storage.getString('user_id');
+    return user_id;
   }
 
   logOut([bool tokenExpired = false]) async {

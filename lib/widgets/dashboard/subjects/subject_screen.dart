@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
+import 'package:flutter_yestech/models/subject/subject.dart';
 import 'package:flutter_yestech/widgets/dashboard/subjects/payment_success_dialog.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class SubjectScreen extends StatefulWidget {
+
+  final Subject subject;
+
+  const SubjectScreen({Key key, this.subject}) : super(key: key);
   @override
   _SubjectScreenState createState() => _SubjectScreenState();
 }
@@ -14,6 +19,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
 
   static var _tertiary = ['First Semester', 'Second Semester', 'Summer'];
 
+  Subject subject;
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController sectionController = TextEditingController();
@@ -59,14 +65,13 @@ class _SubjectScreenState extends State<SubjectScreen> {
   _addSubjectDialog( BuildContext context ) {
 
     TextStyle textStyle = Theme.of(context).textTheme.title;
-
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return Dialog(
             shape: RoundedRectangleBorder(
                 borderRadius:
-                BorderRadius.circular(15.0)), //this right here
+                BorderRadius.circular(0.0)), //this right here
             child: Container(
               height: 400,
               child: Padding(
@@ -172,7 +177,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
   void updateLevelAsInt(String value) {
     switch (value) {
       case 'Primary Level':
-        //subject.level = 1;
+        //subject.level = 1 ;
         break;
       case 'Secondary Level':
         //subject.level = 2;

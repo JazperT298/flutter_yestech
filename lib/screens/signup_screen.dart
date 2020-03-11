@@ -45,7 +45,7 @@ class _SignupScreenState extends State<SignupScreen> {
       response = await Provider.of<AuthProvider>(context)
           .registerEducator(_email, _password);
       if (response['success']) {
-        AuthService.signUpUsers(context, _email, _password, widget.roleId);
+        AuthService.registerUsers(context, _email, _password, widget.roleId);
         Navigator.pop(context);
       } else {
         setState(() {

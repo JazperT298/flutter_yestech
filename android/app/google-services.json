@@ -1,34 +1,71 @@
 {
   "project_info": {
-    "project_number": "10208327593",
-    "firebase_url": "https://flutter-yestech.firebaseio.com",
-    "project_id": "flutter-yestech",
-    "storage_bucket": "flutter-yestech.appspot.com"
+    "project_number": "701742442702",
+    "firebase_url": "https://yesmobile-86b5d.firebaseio.com",
+    "project_id": "yesmobile-86b5d",
+    "storage_bucket": "yesmobile-86b5d.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:10208327593:android:a183a39af3d66ad5b3f6b8",
+        "mobilesdk_app_id": "1:701742442702:android:d794228e570f3b197b489f",
         "android_client_info": {
           "package_name": "com.example.flutter_yestech"
         }
       },
       "oauth_client": [
         {
-          "client_id": "10208327593-jahngf39o3lvjv0a3efulj1ugaik8f71.apps.googleusercontent.com",
+          "client_id": "701742442702-lllevtc6tk26fjquajj0stqdtmcciqhm.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCyy1FT0Cu_FhIRnf4lI5vQxFvmS8RWM7g"
+          "current_key": "AIzaSyCBFFYsP2jYmoGCLIpxoS4FSM3h5FC8UrM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "10208327593-jahngf39o3lvjv0a3efulj1ugaik8f71.apps.googleusercontent.com",
+              "client_id": "701742442702-lllevtc6tk26fjquajj0stqdtmcciqhm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:701742442702:android:b78c0acd5eab2d287b489f",
+        "android_client_info": {
+          "package_name": "com.theyestech.yes_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "701742442702-7gh04j69kabl0rken56ju8natemuak7t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.theyestech.yes_mobile",
+            "certificate_hash": "79170208db93f7428290aa7d2df1ffdbbb64a385"
+          }
+        },
+        {
+          "client_id": "701742442702-lllevtc6tk26fjquajj0stqdtmcciqhm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBFFYsP2jYmoGCLIpxoS4FSM3h5FC8UrM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "701742442702-lllevtc6tk26fjquajj0stqdtmcciqhm.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
