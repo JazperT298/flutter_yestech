@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_yestech/models/chat/message.dart';
-import 'package:flutter_yestech/models/user/users.dart';
+import 'package:flutter_yestech/models/user/User.dart';
 import 'package:flutter_yestech/services/database_service.dart';
 
 import 'chat_screen.dart';
@@ -59,7 +59,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
               return FutureBuilder(
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   Users users = Users.fromDoc(snapshot.data);
-                  print(users.email);
+                  print(users.user_email_address);
                   return GestureDetector(
                     onTap: () => Navigator.push(
                         context,
@@ -75,10 +75,10 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                         children: <Widget>[
                           CircleAvatar(
                             radius: 35.0,
-                            backgroundImage: AssetImage(_users[index].profileImageUrl),
+                            backgroundImage: AssetImage(_users[index].user_image),
                           ),
                           SizedBox(height: 6.0,),
-                          Text(_users[index].email,
+                          Text(_users[index].user_email_address,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16.0,

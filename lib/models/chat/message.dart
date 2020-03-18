@@ -1,5 +1,6 @@
 import 'package:flutter_yestech/models/chat/user_model.dart';
-import 'package:flutter_yestech/models/user/users.dart';
+import 'package:flutter_yestech/models/user/User.dart';
+
 import 'package:flutter_yestech/services/database_service.dart';
 
 class Message {
@@ -15,18 +16,18 @@ class Message {
 }
   // You - current user
   final Users currentUser  = Users(
-      id:'0', email: 'Current User', profileImageUrl: 'assets/images/sherry.jpg');
+      user_id:'0', user_email_address: 'Current User', user_image: 'assets/images/sherry.jpg');
   // Users
-  final Users conan = Users(id: '1', email: 'Conan', profileImageUrl: 'assets/images/conan.jpg');
-  final Users james = Users(id: '2', email: 'James', profileImageUrl: 'assets/images/james.jpg');
-  final Users john = Users(id: '3', email: 'John', profileImageUrl: 'assets/images/john.jpg');
-  final Users kirk = Users(id: '4', email: 'Kirk', profileImageUrl: 'assets/images/kirk.jpg');
-  final Users marty = Users(id: '5', email: 'Marty', profileImageUrl: 'assets/images/marty.jpg');
-  final Users ran = Users(id: '6', email: 'Ran', profileImageUrl: 'assets/images/ran.jpg');
-  final Users save = Users(id:'7', email: 'Dave', profileImageUrl: 'assets/images/save.jpg');
-  final Users sherry = Users(id: '8', email: 'Sherry', profileImageUrl: 'assets/images/sherry.jpg');
-  final Users shinichi = Users(id:'9', email: 'Shinichi', profileImageUrl: 'assets/images/shinichi.jpg');
-  final Users soo = Users(id: '10', email: 'Soo-In-Lee', profileImageUrl: 'assets/images/soo.jpg');
+  final Users conan = Users(user_id: '1', user_email_address: 'Conan', user_image: 'assets/images/conan.jpg');
+  final Users james = Users(user_id: '2', user_email_address: 'James', user_image: 'assets/images/james.jpg');
+  final Users john = Users(user_id: '3', user_email_address: 'John', user_image: 'assets/images/john.jpg');
+  final Users kirk = Users(user_id: '4', user_email_address: 'Kirk', user_image: 'assets/images/kirk.jpg');
+  final Users marty = Users(user_id: '5', user_email_address: 'Marty', user_image: 'assets/images/marty.jpg');
+  final Users ran = Users(user_id: '6', user_email_address: 'Ran', user_image: 'assets/images/ran.jpg');
+  final Users save = Users(user_id:'7', user_email_address: 'Dave', user_image: 'assets/images/save.jpg');
+  final Users sherry = Users(user_id: '8', user_email_address: 'Sherry', user_image: 'assets/images/sherry.jpg');
+  final Users shinichi = Users(user_id:'9', user_email_address: 'Shinichi', user_image: 'assets/images/shinichi.jpg');
+  final Users soo = Users(user_id: '10', user_email_address: 'Soo-In-Lee', user_image: 'assets/images/soo.jpg');
 
   //Favorite Contacts
   List<Users> favorites = [conan, james, john, kirk, marty, soo];

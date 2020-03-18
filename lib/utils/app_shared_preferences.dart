@@ -2,8 +2,8 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter_yestech/models/user/User.dart';
 import 'package:flutter_yestech/models/user/user_educator.dart';
-import 'package:flutter_yestech/models/user/users.dart';
 import 'package:flutter_yestech/utils/constant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

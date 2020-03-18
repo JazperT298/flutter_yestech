@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_yestech/models/chat/user_model.dart';
 import 'package:flutter_yestech/models/post_model.dart';
+import 'package:flutter_yestech/models/user/User.dart';
 import 'package:flutter_yestech/models/user/user_educator.dart';
-import 'package:flutter_yestech/models/user/users.dart';
 import 'package:flutter_yestech/screens/profile_screen.dart';
 import 'package:flutter_yestech/services/database_service.dart';
 import 'package:flutter_yestech/utils/constant.dart';
@@ -69,20 +69,20 @@ class _FeedScreenState extends State<FeedScreen> {
                     Navigator.pushReplacementNamed(context, ProfileScreen.id),
                 child: CircleAvatar(
                   radius: 20.0,
-                  backgroundImage: users.profileImageUrl.isEmpty
+                  backgroundImage: users.user_image.isEmpty
                       ? CachedNetworkImageProvider(image)
                       : CachedNetworkImageProvider(
-                      users.profileImageUrl),
+                      users.user_image),
                 ),
               ),
               Container(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  users.firsname == null
-                      ? users.email
-                      : users.firsname + ' ' +
-                      users.middlename.substring(0, 1) + '.' + ' ' +
-                      users.lastname,
+                  users.user_firstname == null
+                      ? users.user_email_address
+                      : users.user_firstname + ' ' +
+                      users.user_middlename.substring(0, 1) + '.' + ' ' +
+                      users.user_lastname,
                   style: Theme
                       .of(context)
                       .textTheme

@@ -1,7 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_yestech/models/user/User.dart';
 import 'package:flutter_yestech/models/user/user_educator.dart';
-import 'package:flutter_yestech/models/user/users.dart';
 import 'package:flutter_yestech/models/user_data.dart';
 import 'package:flutter_yestech/models/user_models.dart';
 import 'package:flutter_yestech/providers/auth_provider.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_yestech/screens/profile_screen.dart';
 import 'package:flutter_yestech/screens/quiz_screen.dart';
 import 'package:flutter_yestech/screens/start_screen.dart';
 import 'package:flutter_yestech/services/database_service.dart';
+import 'package:flutter_yestech/utils/app_shared_preferences.dart';
 import 'package:flutter_yestech/utils/constant.dart';
 import 'package:flutter_yestech/widgets/dashboard/connections/connections_screen.dart';
 import 'package:flutter_yestech/widgets/dashboard/courses/courses_screen.dart';
@@ -23,53 +25,47 @@ import 'package:toast/toast.dart';
 
 class DashboardScreen extends StatefulWidget {
   static final String id = 'dashboard_screen';
-  final String currentUserId;
-  final String userId;
+  Users users;
 
-  DashboardScreen({this.currentUserId, this.userId});
+  DashboardScreen({this.users});
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
 }
-
+enum Departments { Profile, Logout }
 class _DashboardScreenState extends State<DashboardScreen> {
   final image = 'https://scontent.fcgy1-1.fna.fbcdn.net/v/t31.0-8/p960x960/30168022_1897484493619658_4342911855731560664_o.jpg?_nc_cat=104&_nc_sid=7aed08&_nc_ohc=y2wtn9SPDBAAX9b7pQC&_nc_ht=scontent.fcgy1-1.fna&_nc_tp=6&oh=ddfb6d6aa1cc075ca31b4936b06f4d60&oe=5EEE308A';
   final TextStyle whiteText = TextStyle(color: Colors.white);
 
   Users users;
 
+  //------------------------------------------------------------------------------
+
+  @override
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+    if (users == null) {
+      await initUserProfile();
+    }
+  }
+
+  //------------------------------------------------------------------------------
+
+  Future<void> initUserProfile() async {
+    Users up = await AppSharedPreferences.getUserProfile();
+    setState(() {
+      users = up;
+    });
+  }
+
+
   @override
   void initState() {
     super.initState();
     print('FUCKSHIT');
-    _getUserId();
-    initUserProfile();
-    checkLoginStatus();
-  }
-  checkLoginStatus() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    if(sharedPreferences.getString("user_token") == null) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => StartScreen())
-      );
-    }
+    //_getUserId();
+    //initUserProfile();
   }
 
-  Future<void> initUserProfile() async {
-    Users up = await AuthProvider.getUserProfile();
-    setState(() {
-      users = up;
-    });
-    print(users.email);
-  }
-
-  _getUserId() async{
-    String user_id = await AuthProvider.getUserId();
-    setState(() {
-      users.id = user_id;
-    });
-    print(users.id);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +98,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Padding(
             padding: const EdgeInsets.only(left: 16.0),
             child: Text(
-              "Schedules",
+              "Statistics",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
             ),
           ),
@@ -113,80 +109,89 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: ListTile(
-                    leading: Container(
-                      alignment: Alignment.bottomCenter,
-                      width: 45.0,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          Container(
-                            height: 20,
-                            width: 8.0,
-                            color: Colors.grey.shade300,
-                          ),
-                          const SizedBox(width: 4.0),
-                          Container(
-                            height: 25,
-                            width: 8.0,
-                            color: Colors.grey.shade300,
-                          ),
-                          const SizedBox(width: 4.0),
-                          Container(
-                            height: 40,
-                            width: 8.0,
-                            color: Colors.blue,
-                          ),
-                          const SizedBox(width: 4.0),
-                          Container(
-                            height: 30,
-                            width: 8.0,
-                            color: Colors.grey.shade300,
-                          ),
-                        ],
+                  child: Column(
+                    children: <Widget>[
+                      Material(
+                        borderRadius: BorderRadius.circular(100.0),
+                        color: Colors.blue.withOpacity(0.1),
+                        child: IconButton(
+                          padding: EdgeInsets.all(15.0),
+                          icon: Icon(Icons.subject),
+                          color: Colors.blueAccent,
+                          iconSize: 30.0,
+                          onPressed: () {},
+                        ),
                       ),
-                    ),
-                    title: Text("Today"),
-                    subtitle: Text("18 subjects"),
+                      SizedBox(height: 4.0,),
+                      Text(
+                        '100 Subjects',
+                        style: TextStyle(
+                            color: Colors.black54,
+                          fontSize: 11.0
+                        ),
+                      ),
+                      SizedBox(
+                        height: 12.0,
+                      )
+                    ],
                   ),
                 ),
                 VerticalDivider(),
                 Expanded(
-                  child: ListTile(
-                    leading: Container(
-                      alignment: Alignment.bottomCenter,
-                      width: 45.0,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          Container(
-                            height: 20,
-                            width: 8.0,
-                            color: Colors.grey.shade300,
-                          ),
-                          const SizedBox(width: 4.0),
-                          Container(
-                            height: 25,
-                            width: 8.0,
-                            color: Colors.grey.shade300,
-                          ),
-                          const SizedBox(width: 4.0),
-                          Container(
-                            height: 40,
-                            width: 8.0,
-                            color: Colors.red,
-                          ),
-                          const SizedBox(width: 4.0),
-                          Container(
-                            height: 30,
-                            width: 8.0,
-                            color: Colors.grey.shade300,
-                          ),
-                        ],
+                  child: Column(
+                    children: <Widget>[
+                      Material(
+                        borderRadius: BorderRadius.circular(100.0),
+                        color: Colors.red.withOpacity(0.1),
+                        child: IconButton(
+                          padding: EdgeInsets.all(15.0),
+                          icon: Icon(Icons.account_circle),
+                          color: Colors.redAccent,
+                          iconSize: 30.0,
+                          onPressed: () {},
+                        ),
                       ),
-                    ),
-                    title: Text("Canceled"),
-                    subtitle: Text("7 quizzes"),
+                      SizedBox(height: 4.0,),
+                      Text(
+                        '100 Students',
+                        style: TextStyle(
+                            color: Colors.black54,
+                            fontSize: 11.0
+                        ),
+                      ),
+                      SizedBox(
+                        height: 12.0,
+                      )
+                    ],
+                  ),
+                ),
+                VerticalDivider(),
+                Expanded(
+                  child: Column(
+                    children: <Widget>[
+                      Material(
+                        borderRadius: BorderRadius.circular(100.0),
+                        color: Colors.green.withOpacity(0.1),
+                        child: IconButton(
+                          padding: EdgeInsets.all(15.0),
+                          icon: Icon(Icons.today),
+                          color: Colors.greenAccent,
+                          iconSize: 30.0,
+                          onPressed: () {},
+                        ),
+                      ),
+                      SizedBox(height: 4.0,),
+                      Text(
+                        '100 Topics',
+                        style: TextStyle(
+                            color: Colors.black54,
+                            fontSize: 11.0
+                        ),
+                      ),
+                      SizedBox(
+                        height: 12.0,
+                      )
+                    ],
                   ),
                 ),
               ],
@@ -312,12 +317,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       color: Colors.lightBlue,
                       icon: Icons.payment,
                       title: "Courses",
-                      data: "900",
+                      data: "100",
                     ),
                   ),
                 ),
                 const SizedBox(width: 16.0),
                 Expanded(
+                  flex: 2,
                   child: GestureDetector(
                     onTap: () => Navigator.push(
                       context,
@@ -329,22 +335,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       color: Colors.lightGreen,
                       icon: Icons.ondemand_video,
                       title: "My Videos",
-                      data: "857",
+                      data: "100",
                     ),
                   ),
-                ),
-                const SizedBox(width: 16.0),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => showToast("Show Stickers Toast", gravity: Toast.BOTTOM),
-                    child: _buildTile(
-                      color: Colors.redAccent,
-                      icon: Icons.stars,
-                      title: "Stickers",
-                      data: "698",
-                    ),
-                  ),
-
                 ),
               ],
             ),
@@ -364,7 +357,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           bottomLeft: Radius.circular(20.0),
           bottomRight: Radius.circular(20.0),
         ),
-        color: Colors.blue,
+        color: Colors.green,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -377,26 +370,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             trailing: CircleAvatar(
               child: GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ProfileScreen(currentUserId: currentUserId, userId : currentUserId,),
-                  ),
-                ),
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen(users: users,),),
+                  );
+                },
               ),
               radius: 25.0,
-              backgroundImage: users.profileImageUrl.isEmpty
+              backgroundImage: users.user_image == null
                 ? CachedNetworkImageProvider(image)
-                  : CachedNetworkImageProvider(users.profileImageUrl),
+                  : CachedNetworkImageProvider(users.user_image),
             ),
           ),
           const SizedBox(height: 10.0),
           Padding(
             padding: const EdgeInsets.only(left: 16.0),
             child: Text(
-              users.firsname == null
-                  ? users.email
-                  : users.firsname + ' ' + users.middlename.substring(0, 1) + '.' +  ' ' + users.lastname,
+              users.user_firstname == null
+                  ? users.user_email_address
+                  : users.user_firstname + ' ' + users.user_middlename.substring(0, 1) + '.' +  ' ' + users.user_lastname,
               style: whiteText.copyWith(
                 fontSize: 18.0,
                 fontWeight: FontWeight.w500,
@@ -407,8 +398,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Padding(
             padding: const EdgeInsets.only(left: 16.0),
             child: Text(
-              users.motto.isEmpty
-                  ? "Mobile App Developer" : users.motto,
+              users.user_motto == null
+                  ? "Mobile App Developer" : users.user_motto,
               style: whiteText,
             ),
           ),
@@ -451,4 +442,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
     Toast.show(msg, context, duration: duration, gravity: gravity);
   }
 
+
+  _showProfileDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        child: new SimpleDialog(
+          title: new Text("Educator"),
+          children: <Widget>[
+            new SimpleDialogOption(
+              child: new Text("Profile"),
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen(users: users,),),
+                ).then((value) { Navigator.pop(context);});
+              },
+            ),
+            new SimpleDialogOption(
+              child: new Text("Logout"),
+              onPressed: (){
+//                Navigator.pop(context, Answers.NO);
+              },
+            ),
+          ],
+        ),
+    );
+  }
 }

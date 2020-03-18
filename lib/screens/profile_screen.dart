@@ -1,11 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_yestech/models/user/User.dart';
 import 'package:flutter_yestech/models/user/user_educator.dart';
-import 'package:flutter_yestech/models/user/users.dart';
 import 'package:flutter_yestech/models/user_data.dart';
 import 'package:flutter_yestech/screens/edit_profile_screen.dart';
 import 'package:flutter_yestech/services/auth_service.dart';
 import 'package:flutter_yestech/services/database_service.dart';
+import 'package:flutter_yestech/utils/app_shared_preferences.dart';
 import 'package:flutter_yestech/utils/constant.dart';
 import 'dart:math' as math;
 
@@ -14,10 +15,9 @@ import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   static final String id = 'profile';
-  final String currentUserId;
-  final String userId;
+  Users users;
 
-  ProfileScreen({this.currentUserId, this.userId});
+  ProfileScreen({this.users});
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
@@ -25,45 +25,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final image = 'https://scontent.fcgy1-1.fna.fbcdn.net/v/t31.0-8/p960x960/30168022_1897484493619658_4342911855731560664_o.jpg?_nc_cat=104&_nc_sid=7aed08&_nc_ohc=y2wtn9SPDBAAX9b7pQC&_nc_ht=scontent.fcgy1-1.fna&_nc_tp=6&oh=ddfb6d6aa1cc075ca31b4936b06f4d60&oe=5EEE308A';
   Users _profileUser;
   String userids;
+  Users users;
+
+  //------------------------------------------------------------------------------
 
   @override
-  void initState(){
-    super.initState();
-    _setupProfileUser();
-    print('dashboard  $widget.userId');
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+    if (users == null) {
+      await initUserProfile();
+    }
   }
 
-  _setupProfileUser() async {
-    Users profileUser = await DatabaseService.getUsersWithId(widget.userId);
+  //------------------------------------------------------------------------------
+
+  Future<void> initUserProfile() async {
+    Users up = await AppSharedPreferences.getUserProfile();
     setState(() {
-      _profileUser = profileUser;
+      users = up;
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
-      body: FutureBuilder(
-        future: usersRef.document(widget.userId).get(),
-        builder: (BuildContext context, AsyncSnapshot snapshot){
-          if (!snapshot.hasData){
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          Users users = Users.fromDoc(snapshot.data);
-          return SingleChildScrollView(
+      body:
+            SingleChildScrollView(
             child: Stack(
               children: <Widget>[
                 SizedBox(
                   height: 250,
                   width: double.infinity,
-                  child: users.profileImageUrl.isEmpty
+                  child: users.user_image == null
                       ? PNetworkImage(
                         image,
                         fit: BoxFit.cover,)
-                      : PNetworkImage(users.profileImageUrl,
+                      : PNetworkImage(users.user_image,
                       fit: BoxFit.cover,),
                 ),
                 Container(
@@ -88,15 +85,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(
-                                        users.firsname == null
-                                            ? users.email
-                                            : users.firsname + ' ' + users.middlename.substring(0, 1) + '.' +  ' ' + users.lastname,
+                                        users.user_firstname == null
+                                            ? users.user_email_address
+                                            : users.user_firstname + ' ' + users.user_middlename.substring(0, 1) + '.' +  ' ' + users.user_lastname,
                                         style: Theme.of(context).textTheme.title,),
                                       ListTile(
                                         contentPadding: EdgeInsets.all(0),
                                         title: Text(
-                                            users.motto.isEmpty
-                                            ? "Mobile App Developer" : users.motto
+                                            users.user_motto == null
+                                            ? "Mobile App Developer" : users.user_motto
                                         ),
                                         subtitle: Text("CDO, Canada"),
                                       ),
@@ -108,20 +105,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   children: <Widget>[
                                     Expanded(child: Column(
                                       children: <Widget>[
-                                        Text("285"),
-                                        Text("Likes")
+                                        Text("100"),
+                                        Text("Connections")
                                       ],
                                     ),),
                                     Expanded(child: Column(
                                       children: <Widget>[
-                                        Text("3025"),
-                                        Text("Comments")
+                                        Text("100"),
+                                        Text("Subjects")
                                       ],
                                     ),),
                                     Expanded(child: Column(
                                       children: <Widget>[
-                                        Text("650"),
-                                        Text("Favourites")
+                                        Text("100"),
+                                        Text("Students")
                                       ],
                                     ),),
                                   ],
@@ -135,8 +132,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10.0),
                                 image: DecorationImage(
-                                    image: users.profileImageUrl.isEmpty ?
-                                    CachedNetworkImageProvider(image): CachedNetworkImageProvider(users.profileImageUrl),
+                                    image: users.user_image == null ?
+                                    CachedNetworkImageProvider(image): CachedNetworkImageProvider(users.user_image),
                                     fit: BoxFit.cover
                                 )
                             ),
@@ -156,54 +153,162 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ListTile(title: Text("User information"),),
                             Divider(),
                             ListTile(
-                              title: Text("Email"),
+                              title: Text("Name"),
                               subtitle: Text(
-                                  users.email.isEmpty
-                                      ? "vanne.marsmylle@gmail.com" : users.email
+                                  users.user_firstname == null
+                                      ? "Vanne Marsmyle Pagapong" : users.user_firstname
                               ),
-                              leading: Icon(Icons.email),
+                              leading: Image.asset(
+                                "assets/images/ic_educator_profile.png",
+                                height: 30.0, width: 30.0,
+                              ),
                             ),
                             ListTile(
-                              title: Text("Phone"),
+                              title: Text("Gender"),
                               subtitle: Text(
-                                  users.contact_number.isEmpty
-                                      ? "+977-9815225566" : users.contact_number
+                                  users.user_gender == null
+                                      ? "Male" : users.user_gender
                               ),
-                              leading: Icon(Icons.phone),
+                              leading: Image.asset(
+                                "assets/images/ic_gender_colored.png",
+                                height: 30.0, width: 30.0,
+                              ),
                             ),
+                            ListTile(
+                              title: Text("Contact"),
+                              subtitle: Text(
+                                  users.user_contact_number == null
+                                      ? "+977-9815225566" : users.user_contact_number
+                              ),
+                              leading: Image.asset(
+                                "assets/images/ic_phone_colored.png",
+                                height: 30.0, width: 30.0,
+                              ),
+                            ),
+                            ListTile(
+                              title: Text("Email"),
+                              subtitle: Text(
+                                  users.user_email_address == null
+                                      ? "vanne.marsmylle@gmail.com" : users.user_email_address
+                              ),
+                              leading: Image.asset(
+                                "assets/images/ic_email_colroed.png",
+                                height: 30.0, width: 30.0,
+                              ),
+                            ),
+                            ListTile(
+                              title: Text("Motto"),
+                              subtitle: Text(
+                                  users.user_motto == null
+                                      ? "All of my Fucking friends are Metal" : users.user_motto
+                              ),
+                              leading: Image.asset(
+                                "assets/images/ic_motto_colored.png",
+                                height: 30.0, width: 30.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 20.0),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            ListTile(title: Text("User Background"),),
+                            Divider(),
+                            ListTile(
+                              title: Text("Educational Attainment"),
+                              subtitle: Text(
+                                  users.user_educational_attainment == null
+                                      ? "Bachelor of Science in Information Technology" : users.user_educational_attainment
+                              ),
+                              leading: Image.asset(
+                                "assets/images/ic_educational_attainment_colored.png",
+                                height: 30.0, width: 30.0,
+                              ),
+                            ),
+                            ListTile(
+                              title: Text("Subjects"),
+                              subtitle: Text(
+                                  users.user_subj_major == null
+                                      ? "Programming" : users.user_subj_major
+                              ),
+                              leading: Image.asset(
+                                "assets/images/ic_subjects_colored.png",
+                                height: 30.0, width: 30.0,
+                              ),
+                            ),
+                            ListTile(
+                              title: Text("Current School"),
+                              subtitle: Text(
+                                  users.user_current_school == null
+                                      ? "Phinma-Cagayan de Oro College" : users.user_current_school
+                              ),
+                              leading: Image.asset(
+                                "assets/images/ic_current_school_colored.png",
+                                height: 30.0, width: 30.0,
+                              ),
+                            ),
+                            ListTile(
+                              title: Text("School Position"),
+                              subtitle: Text(
+                                  users.user_position == null
+                                      ? "Faculty" : users.user_position
+                              ),
+                              leading: Image.asset(
+                                "assets/images/ic_school_position_colored.png",
+                                height: 30.0, width: 30.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 20.0),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            ListTile(title: Text("Social Accounts"),),
+                            Divider(),
                             ListTile(
                               title: Text("Facebook"),
                               subtitle: Text(
-                                  users.facebook.isEmpty
-                                      ? "facebook.com" : users.facebook
+                                  users.user_facebook == null
+                                      ? "facebook.com" : users.user_facebook
                               ),
-                              leading: Icon(Icons.face),
-                            ),
-                            ListTile(
-                              title: Text("Instagram"),
-                              subtitle: Text(
-                                  users.instagram.isEmpty
-                                      ? "instagram.com" : users.instagram
+                              leading: Image.asset(
+                                "assets/images/ic_facebook_colored.png",
+                                height: 30.0, width: 30.0,
                               ),
-                              leading: Icon(Icons.my_location),
                             ),
                             ListTile(
                               title: Text("Twitter"),
                               subtitle: Text(
-                                  users.twitter.isEmpty
-                                      ? "twitter.com" : users.twitter
+                                  users.user_twitter == null
+                                      ? "twitter.com" : users.user_twitter
                               ),
-                              leading: Icon(Icons.web),
+                              leading: Image.asset(
+                                "assets/images/ic_twitter_colored.png",
+                                height: 30.0, width: 30.0,
+                              ),
                             ),
                             ListTile(
-                              title: Text("About"),
-                              subtitle: Text("Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nulla, illo repellendus quas beatae reprehenderit nemo, debitis explicabo officiis sit aut obcaecati iusto porro? Exercitationem illum consequuntur magnam eveniet delectus ab."),
-                              leading: Icon(Icons.person),
-                            ),
-                            ListTile(
-                              title: Text("Joined Date"),
-                              subtitle: Text("15 February 2019"),
-                              leading: Icon(Icons.calendar_view_day),
+                              title: Text("Instagram"),
+                              subtitle: Text(
+                                  users.user_instagram == null
+                                      ? "instagram.com" : users.user_instagram
+                              ),
+                              leading: Image.asset(
+                                "assets/images/ic_instagram_colored.png",
+                                height: 30.0, width: 30.0,
+                              ),
                             ),
                           ],
                         ),
@@ -238,9 +343,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
-          );
-        }
-      ),
+          ),
+        //}
+      //),
     );
   }
   Widget _simplePopup() => PopupMenuButton<int>(

@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_yestech/models/chat/chat_model.dart';
-import 'package:flutter_yestech/models/user/users.dart';
+import 'package:flutter_yestech/models/user/User.dart';
 import 'package:flutter_yestech/services/database_service.dart';
 import 'package:flutter_yestech/widgets/chat/category_selector.dart';
 import 'package:flutter_yestech/widgets/chat/favorite_contacts.dart';
@@ -11,11 +11,9 @@ import 'package:flutter_yestech/widgets/chat/chat_screen.dart';
 class ChatScreen extends StatefulWidget {
 
   static final String id = 'chat_screen';
-  final Users users;
-  final String currentUserId;
-  final String userId;
+  Users users;
 
-  ChatScreen({this.users, this.currentUserId, this.userId});
+  ChatScreen({this.users});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -44,7 +42,7 @@ class _ChatScreenState extends State<ChatScreen> {
     print('number of users :');
     print(_users.length);
     print('FUCKING WHORE SHIT NIGGA');
-    print(widget.userId);
+    print(users.user_id);
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
@@ -116,13 +114,13 @@ class _ChatScreenState extends State<ChatScreen> {
                             return FutureBuilder(
                               builder: (BuildContext context, AsyncSnapshot snapshot) {
                                 Users users = snapshot.data;
-                                print(user.email);
+                                print(user.user_email_address);
                                 return GestureDetector(
                                   onTap: () => Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (_) => ChatScreens(
-                                          users: _users[index], userId: widget.userId, currentUserId: widget.currentUserId,
+                                          //users: _users[index], userId: widget.userId, currentUserId: widget.currentUserId,
                                         ),
                                       )
                                   ),
@@ -132,9 +130,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                       children: <Widget>[
                                         CircleAvatar(
                                           radius: 35.0,
-                                          backgroundImage: _users[index].profileImageUrl.isEmpty
+                                          backgroundImage: _users[index].user_image == null
                                               ? CachedNetworkImageProvider(image)
-                                              : CachedNetworkImageProvider(_users[index].profileImageUrl),
+                                              : CachedNetworkImageProvider(_users[index].user_image),
                                         ),
                                         //SizedBox(height: 6.0,),
 //                                        Text(_users[index].email,
@@ -156,7 +154,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       ],
                     ),
                   ),
-                  RecentChats(users: users, userId: widget.userId, currentUserId: widget.currentUserId,),
+                  //RecentChats(users: users, userId: widget.userId, currentUserId: widget.currentUserId,),
                 ],
               ),
             ),

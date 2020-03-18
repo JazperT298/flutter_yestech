@@ -13,9 +13,12 @@ final commentsRef = _firestore.collection('comments');
 final activitiesRef = _firestore.collection('activities');
 final chatsRef = _firestore.collection('chats');
 
+///////////////////////////////////////////////////////////////////////////////
 class APIConstants {
   static const String OCTET_STREAM_ENCODING = "application/octet-stream";
-  static const String API_BASE_URL = "https://hafinse.000webhostapp.com";
+  static const String API_BASE_URL = 'http://192.168.1.6/yes_tech/controllerClass';
+  static const String API_BASE_LIVE_URL = 'https://theyestech.com/controllerClass';
+
 }
 
 class APIOperations {
@@ -74,6 +77,7 @@ class SnackBarText {
   static const String ENTER_VALID_MAIL = "Please Enter Valid Email Id";
   static const String ENTER_NAME = "Please Enter your Name";
   static const String INVALID_OLD_PASSWORD = "Invalid Old Password";
+  static const String PASSWORD_NOT_MATCH = "Password didn't match, Please try again";
 
 }
 

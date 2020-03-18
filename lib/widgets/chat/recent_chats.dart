@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_yestech/models/chat/chat_model.dart';
 import 'package:flutter_yestech/models/chat/message.dart';
-import 'package:flutter_yestech/models/user/users.dart';
+import 'package:flutter_yestech/models/user/User.dart';
 import 'package:flutter_yestech/services/database_service.dart';
 import 'package:flutter_yestech/widgets/chat/chat_screen.dart';
 
@@ -82,7 +82,7 @@ class _RecentChatsState extends State<RecentChats> {
                     children: <Widget>[
                       Row(
                         children: <Widget>[
-                          CircleAvatar(radius: 35.0, backgroundImage: AssetImage(chat.sender.profileImageUrl),
+                          CircleAvatar(radius: 35.0, backgroundImage: AssetImage(chat.sender.user_image),
                           ),
                           SizedBox(
                             width: 10.0,
@@ -91,7 +91,7 @@ class _RecentChatsState extends State<RecentChats> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text (
-                                chat.sender.email,
+                                chat.sender.user_email_address,
                                 style: TextStyle (color: Colors.grey, fontSize: 13.0, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(

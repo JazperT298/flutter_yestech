@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter_yestech/customviews/progress_dialog.dart';
+import 'package:flutter_yestech/models/base/EventObject.dart';
+import 'package:flutter_yestech/providers/auth_provider.dart';
 import 'package:flutter_yestech/providers/auth_provider.dart';
 import 'package:flutter_yestech/screens/home_screen.dart';
 import 'package:flutter_yestech/screens/signup_screen.dart';
 import 'package:flutter_yestech/services/auth_service.dart';
+import 'package:flutter_yestech/utils/app_shared_preferences.dart';
 import 'package:flutter_yestech/utils/constant.dart';
 import 'package:flutter_yestech/utils/network_image.dart';
 import 'package:flutter_yestech/utils/styles.dart';
@@ -29,13 +32,10 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _rememberMe = false;
 
   bool _saving = false;
-  final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<ScaffoldState>();
 
   ProgressDialog progressDialog =
   ProgressDialog.getProgressDialog(ProgressDialogTitles.USER_LOG_IN);
-
-  String _email, _password;
-  String _message = '';
 
   TextEditingController emailController = new TextEditingController(text: "");
 
@@ -46,24 +46,6 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     print(widget.roleId);
   }
-
-  //Login Educator to from API and Firebase
-  Future<void> loginEducator() async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-      await Provider.of<AuthProvider>(context).loginEducator(context, _email, _password);
-      //AuthService.loginUsers(context, _email, _password);
-    }
-  }
-  //Login Student to from API and Firebase
-  Future<void> loginStudent() async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-      await Provider.of<AuthProvider>(context).loginStudent(context, _email, _password);
-      //AuthService.loginUsers(context, _email, _password);
-    }
-  }
-
   //------------------------------------------------------------------------------
   Widget _buildPageContent(BuildContext context) {
     return new Scaffold(
@@ -81,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
           color: Colors.green,
         ),
         backgroundColor: Colors.white,
-        onPressed: () {},
+        onPressed: _loginButtonAction,
       ),
     );
   }
@@ -272,5 +254,77 @@ class _LoginScreenState extends State<LoginScreen> {
       body: _buildPageContent(context),
     );
   }
+
+  //------------------------------------------------------------------------------
+  void _loginButtonAction() {
+    if (emailController.text == "") {
+      _formKey.currentState.showSnackBar(new SnackBar(
+        content: new Text(SnackBarText.ENTER_EMAIL),
+      ));
+      return;
+    }
+
+    if (passwordController.text == "") {
+      _formKey.currentState.showSnackBar(new SnackBar(
+        content: new Text(SnackBarText.ENTER_PASS),
+      ));
+      return;
+    }
+    FocusScope.of(context).requestFocus(new FocusNode());
+    progressDialog.showProgress();
+    _loginUser(emailController.text, passwordController.text);
+  }
+
+  //------------------------------------------------------------------------------
+  void _loginUser(String id, String password) async {
+    EventObject eventObject = await AuthProvider().loginUser(id, password);
+    switch (eventObject.id) {
+      case EventConstants.LOGIN_USER_SUCCESSFUL:
+        {
+          setState(() {
+            AppSharedPreferences.setUserLoggedIn(true);
+            AppSharedPreferences.setUserProfile(eventObject.object);
+            //getUsersDetail();
+            _formKey.currentState.showSnackBar(new SnackBar(
+              content: new Text(SnackBarText.LOGIN_SUCCESSFUL),
+            ));
+            progressDialog.hideProgress();
+            _goToHomeScreen();
+          });
+        }
+        break;
+      case EventConstants.LOGIN_USER_UN_SUCCESSFUL:
+        {
+          setState(() {
+            _formKey.currentState.showSnackBar(new SnackBar(
+              content: new Text(SnackBarText.LOGIN_UN_SUCCESSFUL),
+            ));
+            progressDialog.hideProgress();
+          });
+        }
+        break;
+      case EventConstants.NO_INTERNET_CONNECTION:
+        {
+          setState(() {
+            _formKey.currentState.showSnackBar(new SnackBar(
+              content: new Text(SnackBarText.NO_INTERNET_CONNECTION),
+            ));
+            progressDialog.hideProgress();
+          });
+        }
+        break;
+    }
+  }
+
+//------------------------------------------------------------------------------
+  void _goToHomeScreen() {
+    Navigator.pushReplacement(
+      context,
+      new MaterialPageRoute(builder: (context) => new HomeScreen()),
+    );
+  }
+
+//------------------------------------------------------------------------------
+
 
 }

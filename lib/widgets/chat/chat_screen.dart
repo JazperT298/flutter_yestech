@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_yestech/models/chat/chat_model.dart';
 import 'package:flutter_yestech/models/chat/message.dart';
 import 'package:flutter_yestech/models/chat/user_model.dart';
-import 'package:flutter_yestech/models/user/users.dart';
+import 'package:flutter_yestech/models/user/User.dart';
 import 'package:flutter_yestech/providers/auth_provider.dart';
 import 'package:flutter_yestech/services/database_service.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +40,7 @@ class _ChatScreenState extends State<ChatScreens> {
     if (_message.isNotEmpty){
       Chat chat = Chat (
         sender: widget.userId,
-        receiver: widget.users.id,
+        receiver: widget.users.user_id,
         message: _message,
         time: Timestamp.fromDate(DateTime.now()),
         unread: false,
@@ -54,7 +54,7 @@ class _ChatScreenState extends State<ChatScreens> {
   }
 
   _setupChats() async {
-    List<Chat> chats = await DatabaseService.getUserChat(widget.users.id);
+    List<Chat> chats = await DatabaseService.getUserChat(widget.users.user_id);
     setState(() {
       _chats = chats;
     });
@@ -63,7 +63,7 @@ class _ChatScreenState extends State<ChatScreens> {
 
 
   _buildMessage(Chat chat, bool isMe){
-    print(widget.users.email);
+    print(widget.users.user_email_address);
     print(chat.message);
     final Container msg =  Container(
       margin: widget.userId.isNotEmpty
@@ -165,10 +165,10 @@ class _ChatScreenState extends State<ChatScreens> {
         title: Container(
           child: CircleAvatar(
             radius: 20.0,
-            backgroundImage: widget.users.profileImageUrl.isEmpty
+            backgroundImage: widget.users.user_image.isEmpty
                 ? CachedNetworkImageProvider(image)
                 : CachedNetworkImageProvider(
-                widget.users.profileImageUrl),
+                widget.users.user_image),
           ),
         ),
         elevation: 0.0,
@@ -205,7 +205,7 @@ class _ChatScreenState extends State<ChatScreens> {
                     itemBuilder: (BuildContext context, int index){
                       final Chat chats = _chats[index];
                       print(chats.message);
-                      final bool isMe = widget.users.id == widget.userId;
+                      final bool isMe = widget.users.user_id == widget.userId;
                       return _buildMessage(chats, isMe );
                     },
                     padding: EdgeInsets.only(top: 15.0),

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter_yestech/customviews/progress_dialog.dart';
+import 'package:flutter_yestech/models/base/EventObject.dart';
 import 'package:flutter_yestech/providers/auth_provider.dart';
+import 'package:flutter_yestech/providers/auth_providers.dart';
 import 'package:flutter_yestech/screens/login_screen.dart';
 import 'package:flutter_yestech/services/auth_service.dart';
 import 'package:flutter_yestech/utils/constant.dart';
@@ -23,7 +25,7 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<ScaffoldState>();
   String _email, _password;
   String _message = '';
 
@@ -34,6 +36,18 @@ class _SignupScreenState extends State<SignupScreen> {
 
   TextEditingController passwordController = new TextEditingController(text: "");
 
+  TextEditingController confirmPasswordController = new TextEditingController(text: "");
+
+//------------------------------------------------------------------------------
+  bool isValidEmail(String em) {
+    String p =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+
+    RegExp regExp = new RegExp(p);
+
+    return regExp.hasMatch(em);
+  }
+
   bool readTerms = false;
 
   void _onReadTermsChanged(bool newValue) => setState(() {
@@ -41,8 +55,10 @@ class _SignupScreenState extends State<SignupScreen> {
 
     if (readTerms) {
       // TODO: Here goes your functionality that remembers the user.
+      newValue = true;
     } else {
       // TODO: Forget the user
+      newValue = false;
     }
   });
 
@@ -56,41 +72,6 @@ class _SignupScreenState extends State<SignupScreen> {
     print(widget.roleId);
   }
 
-  //Register Educator from API and Firebase
-  Future<void> _registerUserEducator() async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-
-      response = await Provider.of<AuthProvider>(context)
-          .registerEducator(_email, _password);
-      if (response['success']) {
-        AuthService.registerUsers(context, _email, _password, widget.roleId);
-        Navigator.pop(context);
-      } else {
-        setState(() {
-          _message = response['message'];
-        });
-      }
-    }
-  }
-
-  //Register Student from API and Firebase
-  Future<void> _registerUserStudent() async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-
-      response = await Provider.of<AuthProvider>(context)
-          .registerStudent(_email, _password);
-      if (response['success']) {
-        AuthService.signUpUsers(context, _email, _password, widget.roleId);
-        Navigator.pop(context);
-      } else {
-        setState(() {
-          _message = response['message'];
-        });
-      }
-    }
-  }
   //------------------------------------------------------------------------------
   Widget _buildPageContent(BuildContext context) {
     return new Scaffold(
@@ -108,7 +89,7 @@ class _SignupScreenState extends State<SignupScreen> {
           color: Colors.green,
         ),
         backgroundColor: Colors.white,
-        onPressed: () {},
+        onPressed: _registerButtonAction,
       ),
     );
   }
@@ -243,7 +224,7 @@ class _SignupScreenState extends State<SignupScreen> {
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
         ),
         child: TextFormField(
-          controller: passwordController,
+          controller: confirmPasswordController,
           decoration: InputDecoration(
               suffixIcon: new Icon(
                 Icons.vpn_key,
@@ -290,12 +271,113 @@ class _SignupScreenState extends State<SignupScreen> {
   void showToast(String msg, {int duration, int gravity}) {
     Toast.show(msg, context, duration: duration, gravity: gravity);
   }
-  void checkUserId(){
-    if (widget.roleId == '1'){
-      _registerUserEducator();
-    }else if (widget.roleId == '2'){
-      _registerUserStudent();
+//  void checkUserId(){
+//    if (widget.roleId == '1'){
+//      _registerUserEducator();
+//    }else if (widget.roleId == '2'){
+//      _registerUserStudent();
+//    }
+//  }
+
+//------------------------------------------------------------------------------
+  void _registerButtonAction() {
+    if (emailController.text == "") {
+      _formKey.currentState.showSnackBar(new SnackBar(
+        content: new Text(SnackBarText.ENTER_EMAIL),
+      ));
+      return;
+    }
+
+    if (!isValidEmail(emailController.text)) {
+      _formKey.currentState.showSnackBar(new SnackBar(
+        content: new Text(SnackBarText.ENTER_VALID_MAIL),
+      ));
+      return;
+    }
+
+    if (emailController.text == "") {
+      _formKey.currentState.showSnackBar(new SnackBar(
+        content: new Text(SnackBarText.ENTER_EMAIL),
+      ));
+      return;
+    }
+
+    if (passwordController.text == "") {
+      _formKey.currentState.showSnackBar(new SnackBar(
+        content: new Text(SnackBarText.ENTER_PASS),
+      ));
+      return;
+    }
+
+    if (passwordController.text != confirmPasswordController.text) {
+      _formKey.currentState.showSnackBar(new SnackBar(
+        content: new Text(SnackBarText.PASSWORD_NOT_MATCH),
+      ));
+      return;
+    }
+
+    FocusScope.of(context).requestFocus(new FocusNode());
+    progressDialog.showProgress();
+    _registerUser(
+        emailController.text, passwordController.text);
+  }
+
+  //------------------------------------------------------------------------------
+  void _registerUser( String email, String password) async {
+    EventObject eventObject = await registerUser( email, password);
+    switch (eventObject.id) {
+      case EventConstants.USER_REGISTRATION_SUCCESSFUL:
+        {
+          setState(() {
+            _formKey.currentState.showSnackBar(new SnackBar(
+              content: new Text(SnackBarText.REGISTER_SUCCESSFUL),
+            ));
+            progressDialog.hideProgress();
+            _goToLoginScreen();
+          });
+        }
+        break;
+      case EventConstants.USER_ALREADY_REGISTERED:
+        {
+          setState(() {
+            _formKey.currentState.showSnackBar(new SnackBar(
+              content: new Text(SnackBarText.USER_ALREADY_REGISTERED),
+            ));
+            progressDialog.hideProgress();
+          });
+        }
+        break;
+      case EventConstants.USER_REGISTRATION_UN_SUCCESSFUL:
+        {
+          setState(() {
+            _formKey.currentState.showSnackBar(new SnackBar(
+              content: new Text(SnackBarText.REGISTER_UN_SUCCESSFUL),
+            ));
+            progressDialog.hideProgress();
+          });
+        }
+        break;
+      case EventConstants.NO_INTERNET_CONNECTION:
+        {
+          setState(() {
+            _formKey.currentState.showSnackBar(new SnackBar(
+              content: new Text(SnackBarText.NO_INTERNET_CONNECTION),
+            ));
+            progressDialog.hideProgress();
+          });
+        }
+        break;
     }
   }
+
+//------------------------------------------------------------------------------
+
+  void _goToLoginScreen() {
+    Navigator.pushReplacement(
+      context,
+      new MaterialPageRoute(builder: (context) => new LoginScreen()),
+    );
+  }
+//------------------------------------------------------------------------------
 
 }

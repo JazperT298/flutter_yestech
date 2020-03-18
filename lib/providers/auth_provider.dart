@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_yestech/customviews/progress_dialog.dart';
+import 'package:flutter_yestech/models/base/EventObject.dart';
+import 'package:flutter_yestech/models/user/ApiRequest.dart';
+import 'package:flutter_yestech/models/user/ApiResponse.dart';
+import 'package:flutter_yestech/models/user/User.dart';
 import 'package:flutter_yestech/models/user/user_educator.dart';
-import 'package:flutter_yestech/models/user/users.dart';
 import 'package:flutter_yestech/screens/dashboard_screen.dart';
 import 'package:flutter_yestech/screens/home_screen.dart';
 import 'package:flutter_yestech/services/auth_service.dart';
@@ -40,6 +43,69 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  ///////////////////////////////////////////////////////////////////////////////
+  Future<EventObject> loginUser(String email, String password) async {
+    try {
+      _status = Status.Authenticating;
+      final encoding = APIConstants.OCTET_STREAM_ENCODING;
+      final response = await http.post('${APIConstants.API_BASE_LIVE_URL}/controller_educator/login_as_educator_class.php',
+          headers: {
+            'Accept': 'application/json',
+          }, body: {
+            'login_e_email_address': email,
+            'login_e_password': password,
+          },
+          encoding: Encoding.getByName(encoding));
+      print('FUCK s ' + response.body.substring(1, response.body .length-1));
+      if (response != null) {
+        if (response.statusCode == APIResponseCode.SC_OK &&
+            response.body != null) {
+          print('YAWA 1 ' );
+          final responseJson = json.decode(response.body.substring(1, response.body .length-1));
+          String token = responseJson['user_token'];
+          String userid = responseJson['user_id'];
+          String code = responseJson['user_code'];
+
+          print(userid);
+          print(token);
+          print(responseJson);
+          print(responseJson['user_token']);
+          await storeUsersData(responseJson);
+          ApiResponse apiResponse = ApiResponse.fromJson(responseJson);
+          print(responseJson);
+          if (apiResponse.result == 'success_educator') {
+            print('YAWA 2 ' );
+            _status = Status.Authenticated;
+            _token = token;
+            //Temporary solution
+            ApiRequest apiRequest = new ApiRequest();
+            Users users = new Users(user_id: userid, user_token: token, user_code: code, user_email_address: email, user_password: password);
+            apiRequest.users = users;
+            print(json.encode(apiRequest.toJson()));
+            return new EventObject(
+                id: EventConstants.LOGIN_USER_SUCCESSFUL,
+                object: users);
+          } else {
+            _status = Status.Unauthenticated;
+            print('YAWA 3 ' );
+            return new EventObject(id: EventConstants.LOGIN_USER_UN_SUCCESSFUL);
+          }
+        } else {
+          _status = Status.Unauthenticated;
+          print('YAWA 4 ' );
+          return new EventObject(id: EventConstants.LOGIN_USER_UN_SUCCESSFUL);
+        }
+      } else {
+        print('YAWA 5 ' );
+        return new EventObject();
+      }
+    } catch (Exception) {
+      print('YAWA 6 ' );
+      print(Exception);
+      return EventObject();
+    }
+  }
+
   Future<bool> loginEducator(BuildContext context, String email, String password) async {
     //progressDialog.showProgress();
     _status = Status.Authenticating;
@@ -60,14 +126,14 @@ class AuthProvider with ChangeNotifier {
       _status = Status.Authenticated;
       _token = apiResponse['user_token'];
 
-      Users users = Users();
-      users.id = apiResponse['user_id'];
-      users.token = apiResponse['user_token'];
-      users.profileImageUrl = apiResponse['user_image'];
-
-
-      print(users.id);
-      print(users.token);
+//      Users users = Users();
+//      users.id = apiResponse['user_id'];
+//      users.token = apiResponse['user_token'];
+//      users.profileImageUrl = apiResponse['user_image'];
+//
+//
+//      print(users.id);
+//      print(users.token);
       await storeUsersData(apiResponse);
       notifyListeners();
       //progressDialog.hideProgress();
@@ -119,9 +185,9 @@ class AuthProvider with ChangeNotifier {
       _token = apiResponse['user_token'];
 
       Users users = Users();
-      users.id = apiResponse['user_id'];
-      users.token = apiResponse['user_token'];
-      users.profileImageUrl =apiResponse['user_image'];
+//      users.id = apiResponse['user_id'];
+//      users.token = apiResponse['user_token'];
+//      users.profileImageUrl =apiResponse['user_image'];
 
       await storeUsersData(apiResponse);
       notifyListeners();

@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_yestech/models/chat/user_model.dart';
+import 'package:flutter_yestech/models/user/User.dart';
 import 'package:flutter_yestech/models/user/user_educator.dart';
-import 'package:flutter_yestech/models/user/users.dart';
 import 'package:flutter_yestech/services/database_service.dart';
 import 'package:flutter_yestech/services/storage_service.dart';
 import 'package:image_picker/image_picker.dart';
@@ -41,7 +41,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override 
   void initState(){
     super.initState();
-    _email = widget.users.email;
+    _email = widget.users.user_email_address;
   }
 
   _handleImageFromGallery() async {
@@ -54,10 +54,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
   _displayProfileImage() {
     if (_profileImage == null ){
-      if (widget.users.profileImageUrl.isEmpty){
+      if (widget.users.user_image.isEmpty){
         return AssetImage('assets/images/user_placeholder.png');
       }else {
-        return CachedNetworkImageProvider(widget.users.profileImageUrl);
+        return CachedNetworkImageProvider(widget.users.user_image);
       }
     }else {
       return FileImage(_profileImage);
@@ -72,28 +72,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       });
       String _profileImageUrl = '';
       if (_profileImage == null) {
-        _profileImageUrl = widget.users.profileImageUrl;
+        _profileImageUrl = widget.users.user_image;
       }else {
-        _profileImageUrl = await StorageService.uploadUserProfileImage(widget.users.profileImageUrl, _profileImage,);
+        _profileImageUrl = await StorageService.uploadUserProfileImage(widget.users.user_image, _profileImage,);
       }
       Users users = Users (
-        id: widget.users.id,
-        firsname: _firsname,
-        lastname: _lastname,
-        middlename: _middlename,
-        suffix: _suffix,
-        gender: _gender,
-        contact_number: _contact_number,
-        educational_attainment: _educational_attainment,
-        subj_major: _subj_major,
-        current_school: _current_school,
-        position: _position,
-        facebook: _facebook,
-        instagram: _instagram,
-        twitter: _twitter,
-        gmail: _gmail,
-        motto: _motto,
-        profileImageUrl: _profileImageUrl,
+        user_id: widget.users.user_id,
+        user_firstname: _firsname,
+        user_lastname: _lastname,
+        user_middlename: _middlename,
+        user_suffixes: _suffix,
+        user_gender: _gender,
+        user_contact_number: _contact_number,
+        user_educational_attainment: _educational_attainment,
+        user_subj_major: _subj_major,
+        user_current_school: _current_school,
+        user_position: _position,
+        user_facebook: _facebook,
+        user_twitter: _instagram,
+        user_instagram: _twitter,
+        user_gmail: _gmail,
+        user_motto: _motto,
+        user_image: _profileImageUrl,
       );
       //Database update
       DatabaseService.updateUsers(users);
