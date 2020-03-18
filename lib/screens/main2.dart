@@ -15,31 +15,49 @@ class MyApp2 extends StatelessWidget {
 
   static final String id = 'main2';
 
+//  Widget _getScreenId(){
+//    return StreamBuilder<FirebaseUser>(
+//      stream: FirebaseAuth.instance.onAuthStateChanged,
+//      builder: (BuildContext context, snapshot) {
+//        if (snapshot.hasData){
+//          Provider.of<AuthProvider> (context).currentUserId = snapshot.data.uid;
+//          return Consumer<AuthProvider>(
+//            builder: (context, user, child) {
+//              switch (user.status) {
+//                case Status.Uninitialized:
+//                  return SplashScreen();
+//                case Status.Unauthenticated:
+//                  return StartScreen();
+//                case Status.Authenticated:
+//                  return HomeScreen();
+//                default:
+//                  return StartScreen();
+//              }
+//            },
+//          );
+//        }else {
+//          return StartScreen();
+//        }
+//      },
+//    );
+//
+//  }
+
   Widget _getScreenId(){
-    return StreamBuilder<FirebaseUser>(
-      stream: FirebaseAuth.instance.onAuthStateChanged,
-      builder: (BuildContext context, snapshot) {
-        if (snapshot.hasData){
-          Provider.of<AuthProvider> (context).currentUserId = snapshot.data.uid;
-          return Consumer<AuthProvider>(
-            builder: (context, user, child) {
-              switch (user.status) {
-                case Status.Uninitialized:
-                  return SplashScreen();
-                case Status.Unauthenticated:
-                  return StartScreen();
-                case Status.Authenticated:
-                  return HomeScreen();
-                default:
-                  return StartScreen();
-              }
-            },
-          );
-        }else {
+
+    return Consumer<AuthProvider>(
+        builder: (context, user, child) {
+      switch (user.status) {
+        case Status.Uninitialized:
+          return SplashScreen();
+        case Status.Unauthenticated:
           return StartScreen();
-        }
-      },
-    );
+        case Status.Authenticated:
+          return HomeScreen();
+        default:
+          return StartScreen();
+      }
+    });
 
   }
 

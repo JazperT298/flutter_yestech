@@ -8,6 +8,7 @@ import 'package:flutter_yestech/providers/auth_provider.dart';
 import 'package:flutter_yestech/screens/feed_screen.dart';
 import 'package:flutter_yestech/screens/profile_screen.dart';
 import 'package:flutter_yestech/screens/quiz_screen.dart';
+import 'package:flutter_yestech/screens/start_screen.dart';
 import 'package:flutter_yestech/services/database_service.dart';
 import 'package:flutter_yestech/utils/constant.dart';
 import 'package:flutter_yestech/widgets/dashboard/connections/connections_screen.dart';
@@ -17,6 +18,7 @@ import 'package:flutter_yestech/widgets/dashboard/notes/notes_screen.dart';
 import 'package:flutter_yestech/widgets/dashboard/subjects/subject_screen.dart';
 import 'package:flutter_yestech/widgets/dashboard/videolab/videolab_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -33,55 +35,69 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final image = 'https://scontent.fcgy1-1.fna.fbcdn.net/v/t31.0-8/p960x960/30168022_1897484493619658_4342911855731560664_o.jpg?_nc_cat=104&_nc_sid=7aed08&_nc_ohc=y2wtn9SPDBAAX9b7pQC&_nc_ht=scontent.fcgy1-1.fna&_nc_tp=6&oh=ddfb6d6aa1cc075ca31b4936b06f4d60&oe=5EEE308A';
   final TextStyle whiteText = TextStyle(color: Colors.white);
 
-  Users _profileUser;
+  Users users;
 
   @override
   void initState() {
     super.initState();
     print('FUCKSHIT');
-    _setupProfileUser();
     _getUserId();
-    print(widget.userId);
+    initUserProfile();
+    checkLoginStatus();
+  }
+  checkLoginStatus() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    if(sharedPreferences.getString("user_token") == null) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => StartScreen())
+      );
+    }
   }
 
-  _setupProfileUser() async {
-    Users profileUser = await DatabaseService.getUsersWithId(widget.userId);
+  Future<void> initUserProfile() async {
+    Users up = await AuthProvider.getUserProfile();
     setState(() {
-      _profileUser = profileUser;
-      print('_profileUser  $profileUser');
+      users = up;
     });
+    print(users.email);
   }
 
   _getUserId() async{
-    String token = await AuthProvider.getUserId();
+    String user_id = await AuthProvider.getUserId();
+    setState(() {
+      users.id = user_id;
+    });
+    print(users.id);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: FutureBuilder(
-          future: AuthProvider.getUserId(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (!snapshot.hasData) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            Users user = Users.fromMap(snapshot.data);
-            return _buildBody(context, user);
-          }),
+      body:
+      _buildBody(context),
+//      FutureBuilder(
+//          future: AuthProvider.getUserProfile(),
+//          builder: (BuildContext context, AsyncSnapshot snapshot) {
+//            if (!snapshot.hasData) {
+//              return Center(
+//                child: CircularProgressIndicator(),
+//              );
+//            }
+//            return _buildBody(context);
+//          }),
 
 //          return _buildBody(context)),
     );
   }
-  Widget _buildBody(BuildContext context,Users users ) {
+  Widget _buildBody(BuildContext context) {
     final String currentUserId = Provider.of<AuthProvider> (context).currentUserId;
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          _buildHeader(users),
+          _buildHeader(),
           const SizedBox(height: 20.0),
           Padding(
             padding: const EdgeInsets.only(left: 16.0),
@@ -339,7 +355,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Container _buildHeader(Users users) {
+  Container _buildHeader() {
     final String currentUserId = Provider.of<AuthProvider> (context).currentUserId;
     return Container(
       padding: const EdgeInsets.fromLTRB(0, 50.0, 0, 32.0),

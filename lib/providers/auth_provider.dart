@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_yestech/customviews/progress_dialog.dart';
 import 'package:flutter_yestech/models/user/user_educator.dart';
 import 'package:flutter_yestech/models/user/users.dart';
+import 'package:flutter_yestech/screens/dashboard_screen.dart';
+import 'package:flutter_yestech/screens/home_screen.dart';
 import 'package:flutter_yestech/services/auth_service.dart';
 import 'package:flutter_yestech/utils/constant.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -61,6 +63,7 @@ class AuthProvider with ChangeNotifier {
       Users users = Users();
       users.id = apiResponse['user_id'];
       users.token = apiResponse['user_token'];
+      users.profileImageUrl = apiResponse['user_image'];
 
 
       print(users.id);
@@ -68,7 +71,12 @@ class AuthProvider with ChangeNotifier {
       await storeUsersData(apiResponse);
       notifyListeners();
       //progressDialog.hideProgress();
-      AuthService.loginUsers(context, email, password);
+      //AuthService.loginUsers(context, email, password);
+      //Navigator.pop(context);
+      Navigator.pushReplacement(
+        context,
+        new MaterialPageRoute(builder: (context) => new DashboardScreen()),
+      );
       return true;
     }else if (response.statusCode == 401) {
       Fluttertoast.showToast(
@@ -113,10 +121,12 @@ class AuthProvider with ChangeNotifier {
       Users users = Users();
       users.id = apiResponse['user_id'];
       users.token = apiResponse['user_token'];
+      users.profileImageUrl =apiResponse['user_image'];
 
       await storeUsersData(apiResponse);
       notifyListeners();
-      AuthService.loginUsers(context, email, password);
+     // AuthService.loginUsers(context, email, password);
+      Navigator.pop(context);
       return true;
     }else if (response.statusCode == 401) {
       _status = Status.Unauthenticated;
@@ -285,6 +295,17 @@ class AuthProvider with ChangeNotifier {
     SharedPreferences storage = await SharedPreferences.getInstance();
     String user_id = storage.getString('user_id');
     return user_id;
+  }
+
+  static Future<Users> getUserProfile() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return Users.fromJson(
+        json.decode(prefs.getString(SharedPreferenceKeys.USER)));
+  }
+  static Future<void> setUserProfile(Users users) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userProfileJson = json.encode(users);
+    return prefs.setString(SharedPreferenceKeys.USER, userProfileJson);
   }
 
   logOut([bool tokenExpired = false]) async {

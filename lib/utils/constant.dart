@@ -74,18 +74,22 @@ class SnackBarText {
   static const String ENTER_VALID_MAIL = "Please Enter Valid Email Id";
   static const String ENTER_NAME = "Please Enter your Name";
   static const String INVALID_OLD_PASSWORD = "Invalid Old Password";
+
 }
 
 class Texts {
-  static const String REGISTER_NOW = "Not Registered ? Register Now !";
+  static const String REGISTER_NOW = "New here ? Sign up Now.";
   static const String LOGIN_NOW = "Already Registered ? Login Now !";
   static const String LOGIN = "LOGIN";
   static const String REGISTER = "REGISTER";
   static const String PASSWORD = "Password";
+  static const String CONFIRM_PASSWORD = "Confirm Password";
   static const String OLD_PASSWORD = "Old Password";
   static const String NEW_PASSWORD = "New Password";
   static const String CHANGE_PASSWORD = "CHANGE PASSWORD";
   static const String LOGOUT = "LOGOUT";
   static const String EMAIL = "Email";
   static const String NAME = "Name";
+  static const String FORGOT_PASSWORD = "Forgot password?";
+  static const String TERMS_CONDITION = "I have read Terms and Conditions?";
 }
