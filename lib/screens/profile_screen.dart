@@ -4,6 +4,7 @@ import 'package:flutter_yestech/models/user/User.dart';
 import 'package:flutter_yestech/models/user/user_educator.dart';
 import 'package:flutter_yestech/models/user_data.dart';
 import 'package:flutter_yestech/screens/edit_profile_screen.dart';
+import 'package:flutter_yestech/screens/start_screen.dart';
 import 'package:flutter_yestech/services/auth_service.dart';
 import 'package:flutter_yestech/services/database_service.dart';
 import 'package:flutter_yestech/utils/app_shared_preferences.dart';
@@ -22,6 +23,8 @@ class ProfileScreen extends StatefulWidget {
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 class _ProfileScreenState extends State<ProfileScreen> {
+  final globalKey = new GlobalKey<ScaffoldState>();
+
   final image = 'https://scontent.fcgy1-1.fna.fbcdn.net/v/t31.0-8/p960x960/30168022_1897484493619658_4342911855731560664_o.jpg?_nc_cat=104&_nc_sid=7aed08&_nc_ohc=y2wtn9SPDBAAX9b7pQC&_nc_ht=scontent.fcgy1-1.fna&_nc_tp=6&oh=ddfb6d6aa1cc075ca31b4936b06f4d60&oe=5EEE308A';
   Users _profileUser;
   String userids;
@@ -47,10 +50,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return new Scaffold(
+      key: globalKey,
       backgroundColor: Colors.grey.shade300,
-      body:
-            SingleChildScrollView(
+      body: SingleChildScrollView(
             child: Stack(
               children: <Widget>[
                 SizedBox(
@@ -317,15 +320,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 AppBar(
+                  key: globalKey,
                   backgroundColor: Colors.transparent,
                   elevation: 0,
                   actions: <Widget>[
-//                    IconButton(
-//                      icon: Icon(
-//                        Icons.more_vert,
-//                      ),
-//                      onPressed: () => _simplePopup,
-//                    ),
                     PopupMenuButton<String>(
                       onSelected: choiceAction,
                       itemBuilder: (BuildContext context) {
@@ -366,12 +364,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (choice == Constants.Settings){
       print('Settings');
     }else if (choice == Constants.Logout){
-      print('Logout');
+      showDialog(
+          barrierDismissible: false,
+          context: globalKey.currentContext,
+          child: _logOutDialog());
     }
     else if (choice == Constants.EditProfile){
       Navigator.push(context, MaterialPageRoute(builder: (_) => EditProfileScreen(users: _profileUser,)),);
     }
   }
+
+  //------------------------------------------------------------------------------
+
+  Widget _logOutDialog() {
+    return new AlertDialog(
+      title: new Text(
+        "Logout",
+        style: new TextStyle(color: Colors.blue[400], fontSize: 20.0),
+      ),
+      content: new Text(
+        "Are you sure you want to Logout from the App",
+        style: new TextStyle(color: Colors.grey, fontSize: 20.0),
+      ),
+      actions: <Widget>[
+        new FlatButton(
+          child: new Text("OK",
+              style: new TextStyle(color: Colors.blue[400], fontSize: 20.0)),
+          onPressed: () {
+            AppSharedPreferences.clear();
+            Navigator.pushReplacement(
+              globalKey.currentContext,
+              new MaterialPageRoute(builder: (context) => new StartScreen()),
+            );
+          },
+        ),
+        new FlatButton(
+          child: new Text("Cancel",
+              style: new TextStyle(color: Colors.blue[400], fontSize: 20.0)),
+          onPressed: () {
+            Navigator.of(globalKey.currentContext).pop();
+          },
+        ),
+      ],
+    );
+  }
+
 }
 class Constants {
   static const String Settings = 'Settings';
