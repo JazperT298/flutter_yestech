@@ -42,7 +42,6 @@ class _ChatScreenState extends State<ChatScreen> {
     print('number of users :');
     print(_users.length);
     print('FUCKING WHORE SHIT NIGGA');
-    print(users.user_id);
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(

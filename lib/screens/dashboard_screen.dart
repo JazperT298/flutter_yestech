@@ -376,7 +376,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 },
               ),
               radius: 25.0,
-              backgroundImage: users.user_image == null
+              backgroundImage: users.user_image == null || users.user_image == 'null'
                 ? CachedNetworkImageProvider(image)
                   : CachedNetworkImageProvider(users.user_image),
             ),

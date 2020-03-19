@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_yestech/models/user/User.dart';
 import 'package:flutter_yestech/models/user/user_educator.dart';
 import 'package:flutter_yestech/models/user_data.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_yestech/services/auth_service.dart';
 import 'package:flutter_yestech/services/database_service.dart';
 import 'package:flutter_yestech/utils/app_shared_preferences.dart';
 import 'package:flutter_yestech/utils/constant.dart';
+import 'package:flutter_yestech/utils/dialogs.dart';
 import 'dart:math' as math;
 
 import 'package:flutter_yestech/utils/network_image.dart';
@@ -53,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return new Scaffold(
       key: globalKey,
       backgroundColor: Colors.grey.shade300,
-      body: SingleChildScrollView(
+      body: new SingleChildScrollView(
             child: Stack(
               children: <Widget>[
                 SizedBox(
@@ -154,7 +156,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Column(
                           children: <Widget>[
                             ListTile(title: Text("User information"),),
-                            Divider(),
                             ListTile(
                               title: Text("Name"),
                               subtitle: Text(
@@ -222,7 +223,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Column(
                           children: <Widget>[
                             ListTile(title: Text("User Background"),),
-                            Divider(),
                             ListTile(
                               title: Text("Educational Attainment"),
                               subtitle: Text(
@@ -279,7 +279,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Column(
                           children: <Widget>[
                             ListTile(title: Text("Social Accounts"),),
-                            Divider(),
                             ListTile(
                               title: Text("Facebook"),
                               subtitle: Text(
@@ -315,12 +314,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ],
                         ),
+                      ),
+                      SizedBox(height: 20.0),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            ListTile(title: Text("Switch Account"),),
+                            GestureDetector(
+                              onTap: () async {
+                                final action =  await Dialogs.logoutDialog(context);
+                                if (action == DialogAction.Ok){
+                                  AppSharedPreferences.clear();
+                                  Navigator.pushReplacement(
+                                    context,
+                                    new MaterialPageRoute(builder: (context) => new StartScreen()),
+                                  );
+                                }else {
+                                  Navigator.of(context).pop();
+                                }
+                              },
+
+                              child: ListTile(
+                                title: Text("Logout"),
+                                subtitle: Text(
+                                 "logout user"
+                                ),
+                                leading: Image.asset(
+                                  "assets/images/ic_logout.png",
+                                  height: 30.0, width: 30.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       )
                     ],
                   ),
                 ),
                 AppBar(
-                  key: globalKey,
                   backgroundColor: Colors.transparent,
                   elevation: 0,
                   actions: <Widget>[
@@ -337,6 +372,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         }).toList();
                       },
                     ),
+
                   ],
                 ),
               ],
@@ -363,11 +399,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void choiceAction(String choice){
     if (choice == Constants.Settings){
       print('Settings');
-    }else if (choice == Constants.Logout){
-      showDialog(
-          barrierDismissible: false,
-          context: globalKey.currentContext,
-          child: _logOutDialog());
     }
     else if (choice == Constants.EditProfile){
       Navigator.push(context, MaterialPageRoute(builder: (_) => EditProfileScreen(users: _profileUser,)),);
@@ -393,7 +424,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           onPressed: () {
             AppSharedPreferences.clear();
             Navigator.pushReplacement(
-              globalKey.currentContext,
+              context,
               new MaterialPageRoute(builder: (context) => new StartScreen()),
             );
           },
@@ -402,7 +433,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: new Text("Cancel",
               style: new TextStyle(color: Colors.blue[400], fontSize: 20.0)),
           onPressed: () {
-            Navigator.of(globalKey.currentContext).pop();
+            Navigator.of(context).pop();
           },
         ),
       ],
@@ -412,12 +443,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 }
 class Constants {
   static const String Settings = 'Settings';
-  static const String Logout = 'Logout';
   static const String EditProfile = 'Edit Profile';
 
   static const List<String> choices = <String>[
     Settings,
-    Logout,
     EditProfile
   ];
 }

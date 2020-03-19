@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_yestech/providers/auth_provider.dart';
 import 'package:flutter_yestech/screens/start_screen.dart';
 import 'package:flutter_yestech/services/auth_service.dart';
+import 'package:flutter_yestech/utils/app_shared_preferences.dart';
 import 'package:provider/provider.dart';
 
 class MenuScreen extends StatefulWidget {
@@ -10,9 +12,11 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
+  final globalKey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: globalKey,
       appBar: AppBar(
         title: Text(
           'Menu'
@@ -200,48 +204,11 @@ class _MenuScreenState extends State<MenuScreen> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 40.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Material(
-                              borderRadius: BorderRadius.circular(100.0),
-                              color: Colors.indigo.withOpacity(0.1),
-                              child: IconButton(
-                                padding: EdgeInsets.all(15.0),
-                                icon: Icon(Icons.exit_to_app),
-                                color: Colors.indigoAccent,
-                                iconSize: 40.0,
-                                onPressed: () {
-                                  Provider.of<AuthProvider>(context).logOut();
-                                  AuthService.logoutUsers();
-                                  Navigator.pushReplacementNamed(context, StartScreen.id);
-                                }
-                              ),
-                            ),
-                            SizedBox(height: 8.0,),
-                            Text(
-                              'Logout',
-                              style: TextStyle(
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.bold
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),
           ),
-
         ],
-
       ),
     );
   }
