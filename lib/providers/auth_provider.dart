@@ -106,6 +106,41 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  ///////////////////////////////////////////////////////////////////////////////
+  Future<EventObject> registerUser(String email, String password) async {
+    try {
+      final encoding = APIConstants.OCTET_STREAM_ENCODING;
+      final response = await http.post('${APIConstants.API_BASE_LIVE_URL}/controller_educator/register_as_educator_class.php',
+          headers: {
+            'Accept': 'application/json',
+          },
+          body: {
+            'e_email_address': email,
+            'e_password': password,
+          },
+          encoding: Encoding.getByName(encoding));
+      print(response.body);
+
+      if (response.body == 'success') {
+        print('YAWA 2 ' );
+        return new EventObject(
+            id: EventConstants.USER_REGISTRATION_SUCCESSFUL, object: null);
+      } else if (response.body == APIOperations.FAILURE) {
+        print('YAWA 3 ' );
+        return new EventObject(id: EventConstants.USER_ALREADY_REGISTERED);
+      } else {
+        print('YAWA 4 ' );
+        return new EventObject(
+            id: EventConstants.USER_REGISTRATION_UN_SUCCESSFUL);
+      }
+    } catch (Exception) {
+      return EventObject();
+    }
+  }
+
+
+
+
   Future<bool> loginEducator(BuildContext context, String email, String password) async {
     //progressDialog.showProgress();
     _status = Status.Authenticating;

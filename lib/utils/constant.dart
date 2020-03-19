@@ -71,6 +71,7 @@ class SnackBarText {
   static const String REGISTER_UN_SUCCESSFUL = "Register Un Successful";
   static const String USER_ALREADY_REGISTERED = "User Already Registered";
   static const String ENTER_PASS = "Please Enter your Password";
+  static const String ENTER_CON_PASS = "Confirm your Password";
   static const String ENTER_NEW_PASS = "Please Enter your New Password";
   static const String ENTER_OLD_PASS = "Please Enter your Old Password";
   static const String ENTER_EMAIL = "Please Enter your Email Id";
@@ -78,6 +79,7 @@ class SnackBarText {
   static const String ENTER_NAME = "Please Enter your Name";
   static const String INVALID_OLD_PASSWORD = "Invalid Old Password";
   static const String PASSWORD_NOT_MATCH = "Password didn't match, Please try again";
+  static const String TERMS_CONDITION = "Please accept Terms and Condition";
 
 }
 

@@ -309,9 +309,23 @@ class _SignupScreenState extends State<SignupScreen> {
       return;
     }
 
+    if (confirmPasswordController.text == "") {
+      _formKey.currentState.showSnackBar(new SnackBar(
+        content: new Text(SnackBarText.ENTER_CON_PASS),
+      ));
+      return;
+    }
+
     if (passwordController.text != confirmPasswordController.text) {
       _formKey.currentState.showSnackBar(new SnackBar(
         content: new Text(SnackBarText.PASSWORD_NOT_MATCH),
+      ));
+      return;
+    }
+
+    if (readTerms == false){
+      _formKey.currentState.showSnackBar(new SnackBar(
+        content: new Text(SnackBarText.TERMS_CONDITION),
       ));
       return;
     }
@@ -324,7 +338,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   //------------------------------------------------------------------------------
   void _registerUser( String email, String password) async {
-    EventObject eventObject = await registerUser( email, password);
+    EventObject eventObject = await AuthProvider().registerUser( email, password);
     switch (eventObject.id) {
       case EventConstants.USER_REGISTRATION_SUCCESSFUL:
         {
