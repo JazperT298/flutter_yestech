@@ -17,13 +17,15 @@ class _SubjectScreenState extends State<SubjectScreen> {
 
   static var _levels = ['Primary Level', 'Secondary Level', 'Tertiary Level'];
 
-  static var _tertiary = ['First Semester', 'Second Semester', 'Summer'];
-
   Subject subject;
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController sectionController = TextEditingController();
 
+  String name = "", description = "", section = "", level = "", semester = "", schoolYear = "";
+
+  String dropDownLevel= 'Primary Level';
+  String dropDownTertiary = '1st Semester';
   @override
   Widget build(BuildContext context) {
 
@@ -64,7 +66,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
 
   _addSubjectDialog( BuildContext context ) {
 
-    TextStyle textStyle = Theme.of(context).textTheme.title;
+    TextStyle textStyle = Theme.of(context).textTheme.body2;
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -73,7 +75,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                 borderRadius:
                 BorderRadius.circular(0.0)), //this right here
             child: Container(
-              height: 400,
+              height: 420,
               child: Padding(
                 padding: const EdgeInsets.all(0.0),
                 child: Column(
@@ -102,9 +104,9 @@ class _SubjectScreenState extends State<SubjectScreen> {
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           contentPadding: const EdgeInsets.all(
-                            16.0,
+                            8.0,
                           ),
-                          hintText: "enter your email",
+                          hintText: "Name",
                         ),
                       ),
                     ),
@@ -114,9 +116,9 @@ class _SubjectScreenState extends State<SubjectScreen> {
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           contentPadding: const EdgeInsets.all(
-                            16.0,
+                            8.0,
                           ),
-                          hintText: "enter your email",
+                          hintText: "Description(Optional)",
                         ),
                       ),
                     ),
@@ -126,42 +128,73 @@ class _SubjectScreenState extends State<SubjectScreen> {
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           contentPadding: const EdgeInsets.all(
-                            16.0,
+                            8.0,
                           ),
-                          hintText: "enter your email",
+                          hintText: "Section",
                         ),
                       ),
                     ),
-                    ListTile(
-                      title: DropdownButton(
-                        items: _levels.map((String dropDownStringItem){
-                          return DropdownMenuItem<String>(
-                            value: dropDownStringItem,
-                            child: Text(dropDownStringItem),
-                          );
-                        }).toList(),
-                        style: textStyle,
-                        //value: getLevelAsString(note.priority),
-                        onChanged: (valueSelectedByUser) {
-                          setState(() {
-                            debugPrint('User selected $valueSelectedByUser');
-                            updateLevelAsInt(valueSelectedByUser);
-                          });
-                        },
+                    Container(
+                      width: 350.0,
+                      child: DropdownButtonHideUnderline(
+                        child: ButtonTheme(
+                          alignedDropdown: true,
+                          child: DropdownButton(  
+                            items: _levels.map((String dropDownStringItem){
+                              return DropdownMenuItem<String>(
+                                value: dropDownStringItem,
+                                child: Text(dropDownStringItem),
+                              );
+                            }).toList(),
+                            style: textStyle,
+                            value: dropDownLevel,
+                            onChanged: (valueSelectedByUser) {
+                              setState(() {
+                                debugPrint('User selected $valueSelectedByUser');
+                                updateLevelAsInt(valueSelectedByUser);
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 350.0,
+                      child: DropdownButtonHideUnderline(
+                        child: ButtonTheme(
+                          alignedDropdown: true,
+                          child: DropdownButton<String> (
+                            value: dropDownTertiary,
+                            onChanged: (valueSelectedByUser1) {
+                              setState(() {
+                                debugPrint('User selected $valueSelectedByUser1');
+                                updateLevelAsInt(valueSelectedByUser1);
+                              });
+                            },
+                            items: <String> ['1st Semester', '2nd Semester', 'Summer']
+                              .map<DropdownMenuItem<String>>((String value){
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                            style: textStyle,
+                          ),
+                        ),
                       ),
                     ),
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 32.0,
+                        horizontal: 8.0,
                       ),
                       child: RaisedButton(
                         elevation: 0,
                         highlightElevation: 0,
                         textColor: Colors.white,
-                        color: Colors.pink,
+                        color: Colors.redAccent,
                         onPressed: (){},
-                        child: Text("Sign up"),
+                        child: Text("Save"),
                       ),
                     ),
                     const SizedBox(height: 10.0),
@@ -202,4 +235,33 @@ class _SubjectScreenState extends State<SubjectScreen> {
     }
     return levels;
   }
+
+  void updateTertiaryAsInt(String value) {
+    switch (value) {
+      case 'First Semester':
+      //subject.level = 1 ;
+        break;
+      case 'Second Semester':
+      //subject.level = 2;
+        break;
+      case 'Summer':
+      //subject.level = 3;
+        break;
+    }
+  }
+//  String getTertiaryAsString(int value) {
+//    String tertiary;
+//    switch (value) {
+//      case 1:
+//        tertiary = _tertiary[0];
+//        break;
+//      case 2:
+//        tertiary = _tertiary[1];
+//        break;
+//      case 3:
+//        tertiary = _tertiary[2];
+//        break;
+//    }
+//    return tertiary;
+//  }
 }

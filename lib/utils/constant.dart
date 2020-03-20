@@ -42,6 +42,12 @@ class EventConstants {
   static const int CHANGE_PASSWORD_SUCCESSFUL = 505;
   static const int CHANGE_PASSWORD_UN_SUCCESSFUL = 506;
   static const int INVALID_OLD_PASSWORD = 507;
+
+  static const int ADD_SUBJECT_SUCCESSFUL = 508;
+  static const int ADD_SUBJECT_UN_SUCCESSFUL = 509;
+  static const int SUBJECT_ALREADY_REGISTERED = 510;
+  static const int DELETE_SUBJECT_SUCCESSFUL = 511;
+  static const int DELETE_SUBJECT_UN_SUCCESSFUL = 512;
 }
 
 class APIResponseCode {
