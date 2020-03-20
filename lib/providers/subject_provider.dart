@@ -1,11 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter_yestech/models/base/EventObject.dart';
+import 'package:flutter_yestech/models/user/ApiResponse.dart';
 import 'package:flutter_yestech/utils/constant.dart';
 import 'package:http/http.dart' as http;
 class SubjectProvider {
   ///////////////////////////////////////////////////////////////////////////////
-  Future<EventObject> saveSubject(String token, String userid, String name, String description, String level, String section, String semester, String schoolYear, String file) async {
+  Future<EventObject> saveSubject(String token, String userid, String name, String description, String level, String section, String semester, String schoolYear) async {
     try {
       final encoding = APIConstants.OCTET_STREAM_ENCODING;
       final response = await http.post('${APIConstants.API_BASE_LIVE_URL}/controller_educator/add_subjects.php',
@@ -13,8 +14,8 @@ class SubjectProvider {
             'Accept': 'application/json',
           },
           body: {
-            'user_token': token,
-            'user_id': userid,
+            'teach_token': token,
+            'teach_id': userid,
             'subj_title': name,
             'subj_description': description,
             'subj_level': level,
@@ -25,8 +26,10 @@ class SubjectProvider {
           },
           encoding: Encoding.getByName(encoding));
       print(response.body);
+      final responseJson = json.decode(response.body.substring(1, response.body .length-1));
 
-      if (response.body == 'success') {
+      ApiResponse apiResponse = ApiResponse.fromJson(responseJson);
+      if (apiResponse.result == 'success') {
         print('YAWA 2 ' );
         return new EventObject(
             id: EventConstants.ADD_SUBJECT_SUCCESSFUL, object: null);

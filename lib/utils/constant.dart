@@ -62,6 +62,7 @@ class SharedPreferenceKeys {
 class ProgressDialogTitles {
   static const String IN_PROGRESS = "In Progress...";
   static const String USER_LOG_IN = "Logging In...";
+  static const String SAVING = "Saving...";
   static const String USER_CHANGE_PASSWORD = "Changing...";
   static const String USER_REGISTER = "Registering...";
 }
@@ -86,6 +87,9 @@ class SnackBarText {
   static const String INVALID_OLD_PASSWORD = "Invalid Old Password";
   static const String PASSWORD_NOT_MATCH = "Password didn't match, Please try again";
   static const String TERMS_CONDITION = "Please accept Terms and Condition";
+  static const String ADD_SUBJECT_SUCCESSFUL = "Add Subject Successful";
+  static const String ADD_SUBJECT_UN_SUCCESSFUL = "Add Subject Un Successful";
+  static const String SUBJECT_ALREADY_REGISTERED = "Subject Already Registerted";
 
 }
 

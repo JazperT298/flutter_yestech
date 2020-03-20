@@ -1,30 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
+import 'package:flutter_yestech/customviews/progress_dialog.dart';
+import 'package:flutter_yestech/models/base/EventObject.dart';
 import 'package:flutter_yestech/models/subject/subject.dart';
+import 'package:flutter_yestech/models/user/User.dart';
+import 'package:flutter_yestech/providers/subject_provider.dart';
+import 'package:flutter_yestech/utils/constant.dart';
+import 'package:flutter_yestech/widgets/dashboard/subjects/add_subject_dialog.dart';
 import 'package:flutter_yestech/widgets/dashboard/subjects/payment_success_dialog.dart';
+import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class SubjectScreen extends StatefulWidget {
 
   final Subject subject;
-
   const SubjectScreen({Key key, this.subject}) : super(key: key);
   @override
   _SubjectScreenState createState() => _SubjectScreenState();
 }
 
 class _SubjectScreenState extends State<SubjectScreen> {
-
-  static var _levels = ['Primary Level', 'Secondary Level', 'Tertiary Level'];
+  final _formKey = GlobalKey<ScaffoldState>();
 
   Subject subject;
-  TextEditingController titleController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
-  TextEditingController sectionController = TextEditingController();
+  Users users;
 
+  TextEditingController nameController = TextEditingController(text: "");
+  TextEditingController descriptionController = TextEditingController(text: "");
+  TextEditingController sectionController = TextEditingController(text: "");
+  var now = new DateTime.now();
+  var formatter = new DateFormat('yyyy');
   String name = "", description = "", section = "", level = "", semester = "", schoolYear = "";
 
-  String dropDownLevel= 'Primary Level';
+  ProgressDialog progressDialog =
+  ProgressDialog.getProgressDialog(ProgressDialogTitles.SAVING);
+  var _levels = ['Primary Level', 'Secondary Level', 'Tertiary Level'];
+  String _currenItemSelected= 'Primary Level';
   String dropDownTertiary = '1st Semester';
   @override
   Widget build(BuildContext context) {
@@ -59,7 +70,12 @@ class _SubjectScreenState extends State<SubjectScreen> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         backgroundColor: Colors.red,
-        onPressed: () => _addSubjectDialog(context),
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => AddSubjectDialog(),
+          ),
+        ),
       ),
     );
   }
@@ -71,6 +87,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
         context: context,
         builder: (BuildContext context) {
           return Dialog(
+            key: _formKey,
             shape: RoundedRectangleBorder(
                 borderRadius:
                 BorderRadius.circular(0.0)), //this right here
@@ -101,6 +118,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextField(
+                        controller: nameController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           contentPadding: const EdgeInsets.all(
@@ -113,6 +131,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextField(
+                        controller: descriptionController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           contentPadding: const EdgeInsets.all(
@@ -125,6 +144,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextField(
+                        controller: sectionController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           contentPadding: const EdgeInsets.all(
@@ -139,20 +159,18 @@ class _SubjectScreenState extends State<SubjectScreen> {
                       child: DropdownButtonHideUnderline(
                         child: ButtonTheme(
                           alignedDropdown: true,
-                          child: DropdownButton(  
+                          child: DropdownButton(
                             items: _levels.map((String dropDownStringItem){
                               return DropdownMenuItem<String>(
                                 value: dropDownStringItem,
                                 child: Text(dropDownStringItem),
                               );
                             }).toList(),
+                            hint: Text("Select Level"),
                             style: textStyle,
-                            value: dropDownLevel,
-                            onChanged: (valueSelectedByUser) {
-                              setState(() {
-                                debugPrint('User selected $valueSelectedByUser');
-                                updateLevelAsInt(valueSelectedByUser);
-                              });
+                            value: _currenItemSelected,
+                            onChanged: (String userSelectedValue){
+                              _currenItemSelected = userSelectedValue;
                             },
                           ),
                         ),
@@ -168,7 +186,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                             onChanged: (valueSelectedByUser1) {
                               setState(() {
                                 debugPrint('User selected $valueSelectedByUser1');
-                                updateLevelAsInt(valueSelectedByUser1);
+                                //updateLevelAsInt(valueSelectedByUser1);
                               });
                             },
                             items: <String> ['1st Semester', '2nd Semester', 'Summer']
@@ -193,7 +211,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                         highlightElevation: 0,
                         textColor: Colors.white,
                         color: Colors.redAccent,
-                        onPressed: (){},
+                        onPressed: () => asd(),
                         child: Text("Save"),
                       ),
                     ),
@@ -206,35 +224,97 @@ class _SubjectScreenState extends State<SubjectScreen> {
         }
     );
   }
+  void asd(){
+    schoolYear = formatter.format(now);
+//    print(users.user_token);
+//    print(users.user_id);
+    print(nameController.text);
+    print(descriptionController.text);
+    print(sectionController.text);
+    print(level);
+    print(semester);
+    print(schoolYear);
+  }
+  //------------------------------------------------------------------------------
+  void _savinguttonAction() {
 
-  void updateLevelAsInt(String value) {
-    switch (value) {
-      case 'Primary Level':
-        //subject.level = 1 ;
-        break;
-      case 'Secondary Level':
-        //subject.level = 2;
-        break;
-      case 'Tertiary Level':
-        //subject.level = 3;
-        break;
+    if (nameController.text == "") {
+      _formKey.currentState.showSnackBar(new SnackBar(
+        content: new Text(SnackBarText.ENTER_EMAIL),
+      ));
+      return;
     }
-  }
-  String getLevelAsString(int value) {
-    String levels;
-    switch (value) {
-      case 1:
-        levels = _levels[0];
-        break;
-      case 2:
-        levels = _levels[1];
-        break;
-      case 3:
-        levels = _levels[2];
-        break;
+
+    if (sectionController.text == "") {
+      _formKey.currentState.showSnackBar(new SnackBar(
+        content: new Text(SnackBarText.ENTER_PASS),
+      ));
+      return;
     }
-    return levels;
+
+//    if (confirmPasswordController.text == "") {
+//      _formKey.currentState.showSnackBar(new SnackBar(
+//        content: new Text(SnackBarText.ENTER_CON_PASS),
+//      ));
+//      return;
+//    }
+
+
+    FocusScope.of(context).requestFocus(new FocusNode());
+    progressDialog.showProgress();
+//    _registerSubject(
+//        users.user_token, users.user_id, nameController.text, descriptionController.text, sectionController.text,
+//        section, semester, schoolYear
+//    );
   }
+
+//  //------------------------------------------------------------------------------
+//  void _registerSubject( String token, String userid, String name, String description, String level, String section, String semester, String schoolYear) async {
+//    EventObject eventObject = await SubjectProvider().saveSubject( token, userid, name, description, level, section, semester, schoolYear);
+//    switch (eventObject.id) {
+//      case EventConstants.ADD_SUBJECT_SUCCESSFUL:
+//        {
+//          setState(() {
+//            _formKey.currentState.showSnackBar(new SnackBar(
+//              content: new Text(SnackBarText.REGISTER_SUCCESSFUL),
+//            ));
+//            progressDialog.hideProgress();
+//            _goToLoginScreen();
+//          });
+//        }
+//        break;
+//      case EventConstants.USER_ALREADY_REGISTERED:
+//        {
+//          setState(() {
+//            _formKey.currentState.showSnackBar(new SnackBar(
+//              content: new Text(SnackBarText.USER_ALREADY_REGISTERED),
+//            ));
+//            progressDialog.hideProgress();
+//          });
+//        }
+//        break;
+//      case EventConstants.USER_REGISTRATION_UN_SUCCESSFUL:
+//        {
+//          setState(() {
+//            _formKey.currentState.showSnackBar(new SnackBar(
+//              content: new Text(SnackBarText.REGISTER_UN_SUCCESSFUL),
+//            ));
+//            progressDialog.hideProgress();
+//          });
+//        }
+//        break;
+//      case EventConstants.NO_INTERNET_CONNECTION:
+//        {
+//          setState(() {
+//            _formKey.currentState.showSnackBar(new SnackBar(
+//              content: new Text(SnackBarText.NO_INTERNET_CONNECTION),
+//            ));
+//            progressDialog.hideProgress();
+//          });
+//        }
+//        break;
+//    }
+//  }
 
   void updateTertiaryAsInt(String value) {
     switch (value) {
