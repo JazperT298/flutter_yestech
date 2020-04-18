@@ -48,6 +48,9 @@ class EventConstants {
   static const int SUBJECT_ALREADY_REGISTERED = 510;
   static const int DELETE_SUBJECT_SUCCESSFUL = 511;
   static const int DELETE_SUBJECT_UN_SUCCESSFUL = 512;
+
+  static const int GET_USER_SUBJECT_SUCCESSFUL = 513;
+  static const int GET_USER_SUBJECT_UN_SUCCESSFUL = 514;
 }
 
 class APIResponseCode {
@@ -90,6 +93,8 @@ class SnackBarText {
   static const String ADD_SUBJECT_SUCCESSFUL = "Add Subject Successful";
   static const String ADD_SUBJECT_UN_SUCCESSFUL = "Add Subject Un Successful";
   static const String SUBJECT_ALREADY_REGISTERED = "Subject Already Registerted";
+  static const String GET_USER_SUBJECT_SUCCESSFUL = "";
+  static const String GET_USER_SUBJECT_UN_SUCCESSFUL = "";
 
 }
 

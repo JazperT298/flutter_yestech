@@ -274,7 +274,7 @@ class _AddSubjectDialogState extends State<AddSubjectDialog> {
 
   //------------------------------------------------------------------------------
   void _savinguttonAction() {
-
+    schoolYear = formatter.format(now);
     if (nameController.text == "") {
       _formKey.currentState.showSnackBar(new SnackBar(
         content: new Text(SnackBarText.ENTER_EMAIL),
@@ -299,6 +299,7 @@ class _AddSubjectDialogState extends State<AddSubjectDialog> {
 
     FocusScope.of(context).requestFocus(new FocusNode());
     progressDialog.showProgress();
+    //asd();
     _registerSubject(
         users.user_token, users.user_id, nameController.text, descriptionController.text, sectionController.text,
         section, semester, schoolYear

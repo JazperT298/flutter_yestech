@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_yestech/models/base/EventObject.dart';
+import 'package:flutter_yestech/models/subject/subject.dart';
 import 'package:flutter_yestech/models/user/ApiResponse.dart';
 import 'package:flutter_yestech/utils/constant.dart';
 import 'package:http/http.dart' as http;
@@ -87,8 +88,8 @@ class SubjectProvider {
             'Accept': 'application/json',
           },
           body: {
-            'user_token': token,
-            'user_id': userid,
+            'teach_token': token,
+            'teach_id': userid,
           },
           encoding: Encoding.getByName(encoding));
       print(response.body);
@@ -96,17 +97,46 @@ class SubjectProvider {
       if (response.body == 'success') {
         print('YAWA 2 ' );
         return new EventObject(
-            id: EventConstants.DELETE_SUBJECT_SUCCESSFUL, object: null);
+            id: EventConstants.GET_USER_SUBJECT_SUCCESSFUL, object: null);
       } else if (response.body == APIOperations.FAILURE) {
         print('YAWA 3 ' );
-        return new EventObject(id: EventConstants.DELETE_SUBJECT_UN_SUCCESSFUL);
+        return new EventObject(id: EventConstants.GET_USER_SUBJECT_UN_SUCCESSFUL);
       } else {
         print('YAWA 4 ' );
         return new EventObject(
-            id: EventConstants.DELETE_SUBJECT_UN_SUCCESSFUL);
+            id: EventConstants.GET_USER_SUBJECT_UN_SUCCESSFUL);
       }
     } catch (Exception) {
       return EventObject();
+    }
+  }
+
+  Future<List<Subject>> getEducatorSubjectDetails1(String token, String userid) async {
+    print("SHIT");
+    final encoding = APIConstants.OCTET_STREAM_ENCODING;
+    final response = await http.post('${APIConstants.API_BASE_LIVE_URL}/controller_educator/get_subjects.php',
+        headers: {
+          'Accept': 'application/json',
+        },
+        body: {
+          'teach_token': token,
+          'teach_id': userid,
+        },
+        encoding: Encoding.getByName(encoding));
+    print("SHIT" + response.body);
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((subject) => new Subject.fromJson(subject)).toList();
+//        var jsonData = json.decode(response.body);
+//        print("SHIT" + response.body);
+//        List <Subject> subjects = [];
+//
+//        for (var s in jsonData){
+//          Subject subject = Subject();
+//        }
+    } else {
+      throw Exception('Failed to load jobs from API');
     }
   }
 

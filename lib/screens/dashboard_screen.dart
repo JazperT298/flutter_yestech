@@ -207,7 +207,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => SubjectScreen(),
+                        builder: (_) => SubjectScreen(userid: users.user_id, token: users.user_token,),
                       ),
                     ),
                     child: _buildTile(

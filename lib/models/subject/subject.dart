@@ -14,6 +14,7 @@ class Subject extends Object with _$SubjectSerializerMixin{
   final String subj_file;
   final String subj_code;
   final String subj_is_deleted;
+  final String studentCount;
 
   Subject({
     this.subj_id,
@@ -27,22 +28,24 @@ class Subject extends Object with _$SubjectSerializerMixin{
     this.subj_school_year,
     this.subj_file,
     this.subj_code,
-    this.subj_is_deleted
+    this.subj_is_deleted,
+    this.studentCount
   });
   factory Subject.fromJson(Map<String, dynamic> json) {
     return new Subject(
-        subj_id: json['subj_id'],
-        subj_level: json['subj_level'] ,
-        user_id: json['user_id'] ,
-        user_token: json['user_token'],
-        subj_section: json['subj_section'],
-        subj_title: json['subj_title'],
-        subj_description: json['subj_description'],
-        subj_semester: json['subj_semester'] ,
-        subj_school_year: json['subj_school_year'] ,
-        subj_file: json['subj_file']  ,
-        subj_code: json['subj_code'],
-        subj_is_deleted: json['subj_is_deleted']
+        subj_id: json['subj_id'] as String,
+        subj_level: json['subj_level'] as String,
+        user_id: json['user_id'] as String,
+        user_token: json['user_token'] as String,
+        subj_section: json['subj_section'] as String,
+        subj_title: json['subj_title'] as String,
+        subj_description: json['subj_description'] as String,
+        subj_semester: json['subj_semester'] as String,
+        subj_school_year: json['subj_school_year'] as String,
+        subj_file: json['subj_file'] as String ,
+        subj_code: json['subj_code'] as String,
+        subj_is_deleted: json['subj_is_deleted'] as String,
+        studentCount: json['studentCount'] as String
     );
   }
 }
@@ -60,6 +63,7 @@ abstract class _$SubjectSerializerMixin {
   String get subj_file;
   String get subj_code;
   String get subj_is_deleted;
+  String get studentCount;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
     'subj_id': subj_id,
@@ -73,6 +77,7 @@ abstract class _$SubjectSerializerMixin {
     'subj_school_year': subj_school_year,
     'subj_file': subj_file,
     'subj_code': subj_code,
-    'subj_is_deleted': subj_is_deleted
+    'subj_is_deleted': subj_is_deleted,
+    'studentCount': studentCount
   };
 }
