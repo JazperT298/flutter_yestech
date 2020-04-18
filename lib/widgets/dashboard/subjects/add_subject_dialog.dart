@@ -340,19 +340,19 @@ class _AddSubjectDialogState extends State<AddSubjectDialog> {
     if (_currentItemSelected != 'Tertiary Level'){
       _registerSubject(
           users.user_token, users.user_id, nameController.text, descriptionController.text, sectionController.text,
-          section, "", schoolYear
+          level, "", schoolYear
       );
     }else{
       _registerSubject(
           users.user_token, users.user_id, nameController.text, descriptionController.text, sectionController.text,
-          section, semester, schoolYear
+          level, semester, schoolYear
       );
     }
 
   }
   //------------------------------------------------------------------------------
-  void _registerSubject( String token, String userid, String name, String description, String level, String section, String semester, String schoolYear) async {
-    EventObject eventObject = await SubjectProvider().saveSubject( token, userid, name, description, level, section, semester, schoolYear);
+  void _registerSubject( String token, String userid, String name, String description, String section, String level, String semester, String schoolYear) async {
+    EventObject eventObject = await SubjectProvider().saveSubject( token, userid, name, description, section, level, semester, schoolYear);
     switch (eventObject.id) {
       case EventConstants.ADD_SUBJECT_SUCCESSFUL:
         {

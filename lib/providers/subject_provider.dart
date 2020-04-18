@@ -19,8 +19,8 @@ class SubjectProvider {
             'teach_id': userid,
             'subj_title': name,
             'subj_description': description,
-            'subj_level': level,
             'subj_section': section,
+            'subj_level': level,
             'subj_semester': semester,
             'subj_school_year': schoolYear,
             'subj_file': '',
@@ -56,7 +56,7 @@ class SubjectProvider {
             'Accept': 'application/json',
           },
           body: {
-            'user_token': token,
+            'teach_token': token,
             'subj_id': subjectid,
           },
           encoding: Encoding.getByName(encoding));
@@ -128,13 +128,6 @@ class SubjectProvider {
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((subject) => new Subject.fromJson(subject)).toList();
-//        var jsonData = json.decode(response.body);
-//        print("SHIT" + response.body);
-//        List <Subject> subjects = [];
-//
-//        for (var s in jsonData){
-//          Subject subject = Subject();
-//        }
     } else {
       throw Exception('Failed to load jobs from API');
     }
