@@ -34,7 +34,18 @@ class _AddSubjectDialogState extends State<AddSubjectDialog> {
   String _currentItemSelected= 'Primary Level';
   String _dropDownTertiary = '1st Semester';
 
+  double opacit = 0.0;
 
+  bool visibilityTag = false;
+  bool visibilityObs = false;
+
+  void _changed(bool visibility, String field) {
+    setState(() {
+      if (_currentItemSelected == "Tertiary Level"){
+        visibilityTag = visibility;
+      }
+    });
+  }
   //------------------------------------------------------------------------------
 
   @override
@@ -99,7 +110,7 @@ class _AddSubjectDialogState extends State<AddSubjectDialog> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         backgroundColor: Colors.red,
-        onPressed: () => _savinguttonAction(),
+        onPressed: () => _savingButtonAction(),
       ),
     );
   }
@@ -128,6 +139,8 @@ class _AddSubjectDialogState extends State<AddSubjectDialog> {
       margin: EdgeInsets.only(top: 20.0, left: 16.0, right: 16.0),
     );
   }
+
+  //Subject Name
   Widget _nameContainer() {
     return  Padding(
       padding: const EdgeInsets.all(8.0),
@@ -151,6 +164,7 @@ class _AddSubjectDialogState extends State<AddSubjectDialog> {
     );
   }
 
+  //Subject Description
   Widget _descriptionContainer() {
     return  Padding(
       padding: const EdgeInsets.all(8.0),
@@ -173,6 +187,7 @@ class _AddSubjectDialogState extends State<AddSubjectDialog> {
     );
   }
 
+  //Subject Section
   Widget _sectionContainer() {
     return  Padding(
       padding: const EdgeInsets.all(8.0),
@@ -195,6 +210,7 @@ class _AddSubjectDialogState extends State<AddSubjectDialog> {
     );
   }
 
+  //Secondary DropDown
   Widget _levelContainer() {
     TextStyle textStyle = Theme.of(context).textTheme.body2;
     return Container(
@@ -213,7 +229,14 @@ class _AddSubjectDialogState extends State<AddSubjectDialog> {
             style: textStyle,
             value: _currentItemSelected,
             onChanged: (String userSelectedValue){
-              _dropDownItemSelected(userSelectedValue);
+              setState(() {
+                _dropDownItemSelected(userSelectedValue);
+                if (userSelectedValue == 'Tertiary Level'){
+                  opacit = 1.0;
+                }else{
+                  opacit = 0.0;
+                }
+              });
             },
           ),
         ),
@@ -221,29 +244,33 @@ class _AddSubjectDialogState extends State<AddSubjectDialog> {
     );
   }
 
+  //Tertiary DropDown
   Widget _tertiaryContainer() {
     TextStyle textStyle = Theme.of(context).textTheme.body2;
-    return  Container(
-      width: 370.0,
-      child: DropdownButtonHideUnderline(
-        child: ButtonTheme(
-          alignedDropdown: true,
-          child: DropdownButton<String> (
-            value: _dropDownTertiary,
-            onChanged: (valueSelectedByUser1) {
-              setState(() {
-                debugPrint('User selected $valueSelectedByUser1');
-                _dropDownItemSelected2(valueSelectedByUser1);
-              });
-            },
-            items: <String> ['1st Semester', '2nd Semester', 'Summer']
-                .map<DropdownMenuItem<String>>((String value){
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            style: textStyle,
+    return  Opacity(
+      opacity: opacit,
+      child: Container(
+        width: 370.0,
+        child: DropdownButtonHideUnderline(
+          child: ButtonTheme(
+            alignedDropdown: true,
+            child: DropdownButton<String> (
+              value: _dropDownTertiary,
+              onChanged: (valueSelectedByUser1) {
+                setState(() {
+                  debugPrint('User selected $valueSelectedByUser1');
+                  _dropDownItemSelected2(valueSelectedByUser1);
+                });
+              },
+              items: <String> ['1st Semester', '2nd Semester', 'Summer']
+                  .map<DropdownMenuItem<String>>((String value){
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              style: textStyle,
+            ),
           ),
         ),
       ),
@@ -272,8 +299,19 @@ class _AddSubjectDialogState extends State<AddSubjectDialog> {
     print(schoolYear);
   }
 
+  void asd2(){
+    schoolYear = formatter.format(now);
+    print(users.user_token);
+    print(users.user_id);
+    print(nameController.text);
+    print(descriptionController.text);
+    print(sectionController.text);
+    print(_currentItemSelected);
+    print(schoolYear);
+  }
+
   //------------------------------------------------------------------------------
-  void _savinguttonAction() {
+  void _savingButtonAction() {
     schoolYear = formatter.format(now);
     if (nameController.text == "") {
       _formKey.currentState.showSnackBar(new SnackBar(
@@ -299,11 +337,18 @@ class _AddSubjectDialogState extends State<AddSubjectDialog> {
 
     FocusScope.of(context).requestFocus(new FocusNode());
     progressDialog.showProgress();
-    //asd();
-    _registerSubject(
-        users.user_token, users.user_id, nameController.text, descriptionController.text, sectionController.text,
-        section, semester, schoolYear
-    );
+    if (_currentItemSelected != 'Tertiary Level'){
+      _registerSubject(
+          users.user_token, users.user_id, nameController.text, descriptionController.text, sectionController.text,
+          section, "", schoolYear
+      );
+    }else{
+      _registerSubject(
+          users.user_token, users.user_id, nameController.text, descriptionController.text, sectionController.text,
+          section, semester, schoolYear
+      );
+    }
+
   }
   //------------------------------------------------------------------------------
   void _registerSubject( String token, String userid, String name, String description, String level, String section, String semester, String schoolYear) async {
