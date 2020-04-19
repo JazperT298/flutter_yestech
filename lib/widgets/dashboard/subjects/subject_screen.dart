@@ -45,6 +45,8 @@ class _SubjectScreenState extends State<SubjectScreen> {
   List<Subject> subjectList;
   int count = 0;
 
+  List<Subject> _subjects = [];
+
   //------------------------------------------------------------------------------
 
   @override
@@ -55,6 +57,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
     }
     print(widget.token);
     print(widget.userid);
+    _setupSubject();
   }
 
   //------------------------------------------------------------------------------
@@ -63,6 +66,16 @@ class _SubjectScreenState extends State<SubjectScreen> {
     Users up = await AppSharedPreferences.getUserProfile();
     setState(() {
       users = up;
+    });
+  }
+
+  _setupSubject() async {
+    // final String userId = Provider.of<UserData>(context).currentUserId;
+    // List<Post> posts = await DatabaseService.getFeedPosts(userId);
+    List<Subject> subjects = await SubjectProvider().getEducatorSubjectDetails1(widget.token, widget.userid);
+    print(subjects.length);
+    setState(() {
+      _subjects = subjects;
     });
   }
   @override
@@ -89,183 +102,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                 height: 200,
               ),
             ),
-            getNoteListView(),
-//            Container(
-//              child: FutureBuilder(
-//                future: SubjectProvider().getEducatorSubjectDetails1(widget.token, widget.userid),
-//                builder: (BuildContext context, AsyncSnapshot snapshot){
-//                  if (snapshot.data == null){
-//                    return Container(
-//                      child: Center(
-//                        child: Text("Loading...."),
-//                      ),
-//                    );
-//                  }else{
-//                    return ListView.builder(
-//                      itemCount: snapshot.data.length,
-//                      itemBuilder: (BuildContext context, int index){
-////                        return ListTile(
-////                          title: Text(snapshot.data[index].subj_title),
-////                        );
-////                        return Container(
-////                          decoration: BoxDecoration(
-////                            color: Colors.white,
-////                            borderRadius: BorderRadius.all(Radius.circular(5.0)),
-////                            boxShadow: [
-////                              BoxShadow(
-////                                  color: Colors.black.withOpacity(0.5),
-////                                  offset: Offset(3.0, 3.0),
-////                                  blurRadius: 15.0
-////                              ),
-////                            ],
-////                          ),
-////                        );
-//                        return Center(
-//                          child: Card(
-//                            child: Column(
-//                              mainAxisSize: MainAxisSize.min,
-//                              children: <Widget>[
-////                                new ListTile(
-//////                                  leading: Icon(Icons.album),
-//////                                  title: Text(snapshot.data[index].subj_title),
-//////                                  subtitle: Text(snapshot.data[index].subj_code),
-//////                                  //trailing: Icon(Icons.delete),
-//////                                ),
-//
-//                              //Subject Title
-//                                Padding(
-//                                  padding: EdgeInsets.symmetric(horizontal: 2.0),
-//                                  child: Column (
-//                                    crossAxisAlignment: CrossAxisAlignment.start,
-//                                    children: <Widget>[
-//                                      Row(
-//                                        children: <Widget>[
-//                                          IconButton(
-//                                            icon: Icon(Icons.subject),
-//                                            iconSize: 25.0,
-//                                          ),
-////                                          Image.asset(
-////                                            "assets/images/ic_educator_profile.png",
-////                                            height: 25.0, width: 25.0,
-////                                          ),
-//                                          Text(
-//                                            snapshot.data[index].subj_title,
-//                                            style: TextStyle(
-//                                              fontSize: 14.0,
-//                                              fontWeight: FontWeight.bold,
-//                                            ),
-//                                          ),
-//                                        ],
-//                                      ),
-//                                    ],
-//                                  ),
-//                                ),
-//                                //Subject Code
-//                                Padding(
-//                                  padding: EdgeInsets.symmetric(horizontal: 2.0),
-//                                  child: Column (
-//                                    crossAxisAlignment: CrossAxisAlignment.start,
-//                                    children: <Widget>[
-//                                      Row(
-//                                        children: <Widget>[
-//                                          IconButton(
-//                                            icon: Icon(Icons.code),
-//                                            iconSize: 25.0,
-//                                          ),
-//                                          Text(
-//                                            snapshot.data[index].subj_code,
-//                                            style: TextStyle(
-//                                              fontSize: 14.0,
-//                                              fontWeight: FontWeight.bold,
-//                                            ),
-//                                          ),
-//                                        ],
-//                                      ),
-//                                    ],
-//                                  ),
-//                                ),
-//                                //Subject School Year
-//                                Padding(
-//                                  padding: EdgeInsets.symmetric(horizontal: 2.0),
-//                                  child: Column (
-//                                    crossAxisAlignment: CrossAxisAlignment.start,
-//                                    children: <Widget>[
-//                                      Row(
-//                                        children: <Widget>[
-//                                          IconButton(
-//                                            icon: Icon(Icons.calendar_today),
-//                                            iconSize: 25.0,
-//                                          ),
-//                                          Text(
-//                                            snapshot.data[index].subj_school_year,
-//                                            style: TextStyle(
-//                                              fontSize: 14.0,
-//                                              fontWeight: FontWeight.bold,
-//                                            ),
-//                                          ),
-//                                        ],
-//                                      ),
-//                                    ],
-//                                  ),
-//                                ),
-//                                //Subject Student Count
-//                                Padding(
-//                                  padding: EdgeInsets.symmetric(horizontal: 2.0),
-//                                  child: Column (
-//                                    crossAxisAlignment: CrossAxisAlignment.start,
-//                                    children: <Widget>[
-//                                      Row(
-//                                        children: <Widget>[
-//                                          IconButton(
-//                                            icon: Icon(Icons.account_balance),
-//                                            iconSize: 25.0,
-//                                          ),
-//                                          Text(
-//                                            snapshot.data[index].studentCount,
-//                                            style: TextStyle(
-//                                              fontSize: 14.0,
-//                                              fontWeight: FontWeight.bold,
-//                                            ),
-//                                          ),
-//                                        ],
-//                                      ),
-//                                    ],
-//                                  ),
-//                                ),
-//                                ButtonBar(
-//                                  children: <Widget>[
-//                                    FlatButton(
-//                                      child: const Text('MANAGE'),
-//                                      onPressed: () { /* ... */ },
-//                                    ),
-//                                    FlatButton(
-//                                      child: const Text('DELETE'),
-//                                      onPressed: () async {
-//                                        final action =  await Dialogs.deleteSubjectDialog(context);
-//                                        if (action == DialogAction.Ok){
-//                                          print(snapshot.data[index].subj_id);
-//                                          _deleteSubject(users.user_token,snapshot.data[index].subj_id );
-////                                          Navigator.pushReplacement(
-////                                            context,
-////                                            new MaterialPageRoute(builder: (context) => new StartScreen()),
-////                                          );
-//                                        }else {
-//                                          Navigator.of(context).pop();
-//                                        }
-//                                      },
-//                                    ),
-//                                  ],
-//                                ),
-//                              ],
-//                            ),
-//                          ),
-//                        );
-//                      },
-//                    );
-//                  }
-//                },
-//              ),
-//            ),
+            getSubjectListView(),
           ],
         ),
       floatingActionButton: FloatingActionButton(
@@ -281,7 +118,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
     );
   }
 
-  Widget getNoteListView () {
+  Widget getSubjectListView () {
     return  Container(
       child: FutureBuilder(
         future: SubjectProvider().getEducatorSubjectDetails1(widget.token, widget.userid),
@@ -326,7 +163,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
 
                         //Subject Title
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 2.0),
+                          padding: EdgeInsets.symmetric(horizontal: 5.0),
                           child: Column (
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
@@ -340,11 +177,30 @@ class _SubjectScreenState extends State<SubjectScreen> {
 //                                            "assets/images/ic_educator_profile.png",
 //                                            height: 25.0, width: 25.0,
 //                                          ),
-                                  Text(
-                                    snapshot.data[index].subj_title,
-                                    style: TextStyle(
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.bold,
+                                  Expanded(
+                                    child: Text(
+                                      snapshot.data[index].subj_title,
+                                      style: TextStyle(
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.code),
+                                    iconSize: 25.0,
+                                  ),
+//                                          Image.asset(
+//                                            "assets/images/ic_educator_profile.png",
+//                                            height: 25.0, width: 25.0,
+//                                          ),
+                                  Expanded(
+                                    child: Text(
+                                      snapshot.data[index].subj_code,
+                                      style: TextStyle(
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -354,31 +210,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                         ),
                         //Subject Code
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 2.0),
-                          child: Column (
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  IconButton(
-                                    icon: Icon(Icons.code),
-                                    iconSize: 25.0,
-                                  ),
-                                  Text(
-                                    snapshot.data[index].subj_code,
-                                    style: TextStyle(
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        //Subject School Year
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 2.0),
+                          padding: EdgeInsets.symmetric(horizontal: 5.0),
                           child: Column (
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
@@ -388,35 +220,30 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                     icon: Icon(Icons.calendar_today),
                                     iconSize: 25.0,
                                   ),
-                                  Text(
-                                    snapshot.data[index].subj_school_year,
-                                    style: TextStyle(
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.bold,
+                                  Expanded(
+                                    child: Text(
+                                      snapshot.data[index].subj_school_year,
+                                      style: TextStyle(
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        //Subject Student Count
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 2.0),
-                          child: Column (
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
                                   IconButton(
                                     icon: Icon(Icons.account_balance),
                                     iconSize: 25.0,
                                   ),
-                                  Text(
-                                    snapshot.data[index].studentCount,
-                                    style: TextStyle(
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.bold,
+//                                          Image.asset(
+//                                            "assets/images/ic_educator_profile.png",
+//                                            height: 25.0, width: 25.0,
+//                                          ),
+                                  Expanded(
+                                    child: Text(
+                                      snapshot.data[index].studentCount,
+                                      style: TextStyle(
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -424,6 +251,54 @@ class _SubjectScreenState extends State<SubjectScreen> {
                             ],
                           ),
                         ),
+                        //Subject School Year
+//                        Padding(
+//                          padding: EdgeInsets.symmetric(horizontal: 5.0),
+//                          child: Column (
+//                            crossAxisAlignment: CrossAxisAlignment.start,
+//                            children: <Widget>[
+//                              Row(
+//                                children: <Widget>[
+//                                  IconButton(
+//                                    icon: Icon(Icons.calendar_today),
+//                                    iconSize: 25.0,
+//                                  ),
+//                                  Text(
+//                                    snapshot.data[index].subj_school_year,
+//                                    style: TextStyle(
+//                                      fontSize: 14.0,
+//                                      fontWeight: FontWeight.bold,
+//                                    ),
+//                                  ),
+//                                ],
+//                              ),
+//                            ],
+//                          ),
+//                        ),
+//                        //Subject Student Count
+//                        Padding(
+//                          padding: EdgeInsets.symmetric(horizontal: 5.0),
+//                          child: Column (
+//                            crossAxisAlignment: CrossAxisAlignment.start,
+//                            children: <Widget>[
+//                              Row(
+//                                children: <Widget>[
+//                                  IconButton(
+//                                    icon: Icon(Icons.account_balance),
+//                                    iconSize: 25.0,
+//                                  ),
+//                                  Text(
+//                                    snapshot.data[index].studentCount,
+//                                    style: TextStyle(
+//                                      fontSize: 14.0,
+//                                      fontWeight: FontWeight.bold,
+//                                    ),
+//                                  ),
+//                                ],
+//                              ),
+//                            ],
+//                          ),
+//                        ),
                         ButtonBar(
                           children: <Widget>[
                             FlatButton(
@@ -437,6 +312,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                 if (action == DialogAction.Ok){
                                   print(snapshot.data[index].subj_id);
                                   _deleteSubject(users.user_token,snapshot.data[index].subj_id );
+                                  _setupSubject();
                                 }else {
                                   Navigator.of(context).pop();
                                 }
