@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,7 @@ import 'package:flutter_yestech/screens/start_screen.dart';
 import 'package:flutter_yestech/services/database_service.dart';
 import 'package:flutter_yestech/utils/app_shared_preferences.dart';
 import 'package:flutter_yestech/utils/constant.dart';
+import 'package:flutter_yestech/utils/dialogs.dart';
 import 'package:flutter_yestech/widgets/dashboard/connections/connections_screen.dart';
 import 'package:flutter_yestech/widgets/dashboard/courses/courses_screen.dart';
 import 'package:flutter_yestech/widgets/dashboard/myvideos/myvideos_screen.dart';
@@ -66,13 +69,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
     //initUserProfile();
   }
 
-
+  Future<bool> _onWillPop() {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Confirm Exit',style: new TextStyle(color: Colors.blue[400], fontSize: 20.0),),
+        content: Text('Are you sure you want to Exit the App?',style: new TextStyle(color: Colors.grey, fontSize: 20.0)),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () => exit(0),
+            /*Navigator.of(context).pop(true)*/
+            child: Text('Yes',style: new TextStyle(color: Colors.blue[400], fontSize: 20.0)),
+          ),
+          FlatButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('No',style: new TextStyle(color: Colors.blue[400], fontSize: 20.0)),
+          ),
+        ],
+      ),
+    ) ??
+        false;
+  }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body:
-      _buildBody(context),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body:
+        _buildBody(context),
 //      FutureBuilder(
 //          future: AuthProvider.getUserProfile(),
 //          builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -85,6 +110,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 //          }),
 
 //          return _buildBody(context)),
+      ),
     );
   }
   Widget _buildBody(BuildContext context) {
