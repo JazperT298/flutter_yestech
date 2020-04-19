@@ -4,6 +4,8 @@ import 'package:flutter_yestech/screens/dashboard_screen.dart';
 import 'package:flutter_yestech/screens/home_screen.dart';
 import 'package:flutter_yestech/screens/profile_screen.dart';
 import 'package:flutter_yestech/widgets/dashboard/notes/notes_screen.dart';
+import 'package:flutter_yestech/widgets/dashboard/subjects/new_topic.dart';
+import 'package:flutter_yestech/widgets/dashboard/subjects/view_students.dart';
 
 class ManageSubject extends StatefulWidget {
   final Subject subject;
@@ -94,7 +96,7 @@ class _ManageSubjectState extends State<ManageSubject> {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => NotesScreen(),
+                        builder: (_) => ViewStudents(),
                       ),
                     ),
                     child: _buildTile(
@@ -118,7 +120,7 @@ class _ManageSubjectState extends State<ManageSubject> {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        //builder: (_) => SubjectScreen(userid: users.user_id, token: users.user_token,),
+                        builder: (_) => NewTopic(),
                       ),
                     ),
                     child: _buildTile(

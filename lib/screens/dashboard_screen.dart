@@ -3,11 +3,13 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_yestech/models/subject/subject.dart';
 import 'package:flutter_yestech/models/user/User.dart';
 import 'package:flutter_yestech/models/user/user_educator.dart';
 import 'package:flutter_yestech/models/user_data.dart';
 import 'package:flutter_yestech/models/user_models.dart';
 import 'package:flutter_yestech/providers/auth_provider.dart';
+import 'package:flutter_yestech/providers/subject_provider.dart';
 import 'package:flutter_yestech/screens/feed_screen.dart';
 import 'package:flutter_yestech/screens/profile_screen.dart';
 import 'package:flutter_yestech/screens/quiz_screen.dart';
@@ -60,12 +62,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
+  List<Subject> _subjects = [];
+  _setupSubject() async {
+    // final String userId = Provider.of<UserData>(context).currentUserId;
+    // List<Post> posts = await DatabaseService.getFeedPosts(userId);
+    List<Subject> subjects = await SubjectProvider().getEducatorSubjectDetails1(widget.users.user_token,widget.users.user_id);
+    print(subjects.length);
+    setState(() {
+      _subjects = subjects;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     print('FUCKSHIT');
-    //_getUserId();
+    _setupSubject();
     //initUserProfile();
   }
 
@@ -150,7 +162,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                       SizedBox(height: 4.0,),
                       Text(
-                        '100 Subjects',
+                        '${_subjects.length.toString()} Subjects',
                         style: TextStyle(
                             color: Colors.black54,
                           fontSize: 11.0
@@ -240,7 +252,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       color: Colors.red,
                       icon: Icons.subject,
                       title: "Subjects",
-                      data: "1200",
+                      data: _subjects.length.toString(),
                     ),
                   ),
                 ),
