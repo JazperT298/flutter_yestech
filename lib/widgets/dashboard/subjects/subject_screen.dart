@@ -9,6 +9,7 @@ import 'package:flutter_yestech/utils/app_shared_preferences.dart';
 import 'package:flutter_yestech/utils/constant.dart';
 import 'package:flutter_yestech/utils/dialogs.dart';
 import 'package:flutter_yestech/widgets/dashboard/subjects/add_subject_dialog.dart';
+import 'package:flutter_yestech/widgets/dashboard/subjects/manage_subject.dart';
 import 'package:flutter_yestech/widgets/dashboard/subjects/payment_success_dialog.dart';
 import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -170,7 +171,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                               Row(
                                 children: <Widget>[
                                   IconButton(
-                                    icon: Icon(Icons.subject),
+                                    icon: Icon(Icons.subject,color: Colors.redAccent,),
                                     iconSize: 25.0,
                                   ),
 //                                          Image.asset(
@@ -187,7 +188,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                     ),
                                   ),
                                   IconButton(
-                                    icon: Icon(Icons.code),
+                                    icon: Icon(Icons.code,color: Colors.redAccent,),
                                     iconSize: 25.0,
                                   ),
 //                                          Image.asset(
@@ -217,7 +218,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                               Row(
                                 children: <Widget>[
                                   IconButton(
-                                    icon: Icon(Icons.calendar_today),
+                                    icon: Icon(Icons.calendar_today,color: Colors.redAccent,),
                                     iconSize: 25.0,
                                   ),
                                   Expanded(
@@ -230,7 +231,7 @@ class _SubjectScreenState extends State<SubjectScreen> {
                                     ),
                                   ),
                                   IconButton(
-                                    icon: Icon(Icons.account_balance),
+                                    icon: Icon(Icons.account_balance,color: Colors.redAccent),
                                     iconSize: 25.0,
                                   ),
 //                                          Image.asset(
@@ -302,11 +303,13 @@ class _SubjectScreenState extends State<SubjectScreen> {
                         ButtonBar(
                           children: <Widget>[
                             FlatButton(
-                              child: const Text('MANAGE'),
-                              onPressed: () { /* ... */ },
+                              child: const Text('MANAGE', style: TextStyle(color: Colors.redAccent,),),
+                              onPressed: () {
+                                Navigator.pushReplacement(context, new MaterialPageRoute(builder: (context) => ManageSubject(snapshot.data[index])));
+                              },
                             ),
                             FlatButton(
-                              child: const Text('DELETE'),
+                              child: const Text('DELETE', style: TextStyle(color: Colors.redAccent,),),
                               onPressed: () async {
                                 final action =  await Dialogs.deleteSubjectDialog(context);
                                 if (action == DialogAction.Ok){
