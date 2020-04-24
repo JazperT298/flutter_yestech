@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter_yestech/models/subject/subject.dart';
 import 'package:flutter_yestech/providers/subject_provider.dart';
+import 'package:flutter_yestech/screens/home_screen.dart';
+import 'package:flutter_yestech/screens/profile_screen.dart';
 import 'package:flutter_yestech/utils/constant.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -34,6 +36,22 @@ class _ViewStudentsState extends State<ViewStudents> {
         title: Text(
           'View Students'
         ),
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            onSelected: choiceAction,
+            itemBuilder: (BuildContext context) {
+              return Constants.choices.map((String choices) {
+                return PopupMenuItem<String>(
+                  value: choices,
+                  child: Text(
+                      choices
+                  ),
+                );
+              }).toList();
+            },
+          ),
+
+        ],
       ),
       body: Stack(
         children: <Widget>[
@@ -270,4 +288,25 @@ class _ViewStudentsState extends State<ViewStudents> {
         context: context, builder: (BuildContext context) => fancyDialog);
   }
 
+  void choiceAction(String choice){
+    if (choice == Constants.Dashboard){
+      print('Dashboard');
+      Navigator.pushReplacement(context, new MaterialPageRoute(builder: (_) => HomeScreen()),);
+    }
+    else if (choice == Constants.Profile){
+      //Navigator.push(context, MaterialPageRoute(builder: (_) => EditProfileScreen(users: _profileUser,)),);
+      Navigator.pushReplacement(context, new MaterialPageRoute(builder: (_) => ProfileScreen()),);
+    }
+  }
+}
+
+
+class Constants {
+  static const String Dashboard = 'Dashboard';
+  static const String Profile = 'Profile';
+
+  static const List<String> choices = <String>[
+    Dashboard,
+    Profile
+  ];
 }
