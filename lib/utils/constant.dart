@@ -18,6 +18,7 @@ class APIConstants {
   static const String OCTET_STREAM_ENCODING = "application/octet-stream";
   static const String API_BASE_URL = 'http://192.168.1.6/yes_tech/controllerClass';
   static const String API_BASE_LIVE_URL = 'https://theyestech.com/controllerClass';
+  static const String API_IMAGE_BASE_LIVE_URL = 'https://theyestech.com/user_images/';
 
 }
 

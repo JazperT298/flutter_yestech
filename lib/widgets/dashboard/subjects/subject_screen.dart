@@ -122,28 +122,6 @@ class _SubjectScreenState extends State<SubjectScreen> {
 
   TextEditingController _textFieldController = TextEditingController();
 
-  _displayDialog(BuildContext context) async {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('TextField in Dialog'),
-            content: TextField(
-              controller: _textFieldController,
-              decoration: InputDecoration(hintText: "TextField in Dialog"),
-            ),
-            actions: <Widget>[
-              new FlatButton(
-                child: new Text('CANCEL'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          );
-        });
-  }
-
   _displayAlert(BuildContext context) async{
     return Alert(
         context: context,
@@ -450,19 +428,4 @@ class _SubjectScreenState extends State<SubjectScreen> {
         break;
     }
   }
-//  String getTertiaryAsString(int value) {
-//    String tertiary;
-//    switch (value) {
-//      case 1:
-//        tertiary = _tertiary[0];
-//        break;
-//      case 2:
-//        tertiary = _tertiary[1];
-//        break;
-//      case 3:
-//        tertiary = _tertiary[2];
-//        break;
-//    }
-//    return tertiary;
-//  }
 }

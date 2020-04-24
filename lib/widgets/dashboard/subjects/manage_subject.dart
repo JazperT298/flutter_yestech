@@ -96,7 +96,7 @@ class _ManageSubjectState extends State<ManageSubject> {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => ViewStudents(),
+                        builder: (_) => ViewStudents(widget.subject.subj_id),
                       ),
                     ),
                     child: _buildTile(
