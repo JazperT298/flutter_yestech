@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
+import 'package:flutter_yestech/customviews/progress_dialog.dart';
+import 'package:flutter_yestech/models/base/EventObject.dart';
 import 'package:flutter_yestech/models/subject/subject.dart';
 import 'package:flutter_yestech/providers/subject_provider.dart';
 import 'package:flutter_yestech/screens/home_screen.dart';
@@ -17,10 +19,13 @@ class ViewStudents extends StatefulWidget {
 }
 
 class _ViewStudentsState extends State<ViewStudents> {
+  final _formKey = GlobalKey<ScaffoldState>();
   Subject subject;
   final image = 'https://scontent.fcgy1-1.fna.fbcdn.net/v/t31.0-8/p960x960/30168022_1897484493619658_4342911855731560664_o.jpg?_nc_cat=104&_nc_sid=7aed08&_nc_ohc=y2wtn9SPDBAAX9b7pQC&_nc_ht=scontent.fcgy1-1.fna&_nc_tp=6&oh=ddfb6d6aa1cc075ca31b4936b06f4d60&oe=5EEE308A';
 
   TextEditingController codeController = TextEditingController(text: "");
+  ProgressDialog progressDialog =
+  ProgressDialog.getProgressDialog(ProgressDialogTitles.SAVING);
 
   @override
   void initState() {
@@ -31,6 +36,7 @@ class _ViewStudentsState extends State<ViewStudents> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _formKey,
       appBar: AppBar(
         backgroundColor: Colors.yellow,
         title: Text(
@@ -71,7 +77,7 @@ class _ViewStudentsState extends State<ViewStudents> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         backgroundColor: Colors.yellow,
-        onPressed: () => showFancyCustomDialog(context),
+        onPressed: () => showAddStudentDialog(context),
       ),
     );
   }
@@ -172,7 +178,7 @@ class _ViewStudentsState extends State<ViewStudents> {
   }
 
 
-  void showFancyCustomDialog(BuildContext context) {
+  void showAddStudentDialog(BuildContext context) {
     Dialog fancyDialog = Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
@@ -185,6 +191,7 @@ class _ViewStudentsState extends State<ViewStudents> {
         width: double.infinity,
         child: Stack(
           children: <Widget>[
+            progressDialog,
             Padding(
               padding: const EdgeInsets.only(top: 50.0),
               child: Container(
@@ -236,6 +243,7 @@ class _ViewStudentsState extends State<ViewStudents> {
               alignment: Alignment.bottomCenter,
               child: InkWell(
                 onTap: () {
+                  _savingButtonAction();
                   Navigator.of(context, rootNavigator: true).pop();
                 },
                 child: Container(
@@ -286,6 +294,71 @@ class _ViewStudentsState extends State<ViewStudents> {
     );
     showDialog(
         context: context, builder: (BuildContext context) => fancyDialog);
+  }
+
+  //------------------------------------------------------------------------------
+  void _savingButtonAction() {
+    if (codeController.text == "") {
+      _formKey.currentState.showSnackBar(new SnackBar(
+        content: new Text(SnackBarText.ENTER_EMAIL),
+      ));
+      return;
+    }
+    FocusScope.of(context).requestFocus(new FocusNode());
+    progressDialog.showProgress();
+
+    print(codeController.text);
+    print(widget.subj_id);
+    _registerStudentToSubject(codeController.text, widget.subj_id);
+  }
+
+  //------------------------------------------------------------------------------
+  void _registerStudentToSubject(String studentCode, String subj_id) async {
+    EventObject eventObject = await SubjectProvider().addStudentToSubject(studentCode, subj_id);
+    switch (eventObject.id) {
+      case EventConstants.ADD_STUDENT_TO_SUBJECT_SUCCESSFUL:
+        {
+          setState(() {
+            _formKey.currentState.showSnackBar(new SnackBar(
+              content: new Text(SnackBarText.ADD_STUDENT_TO_SUBJECT_SUCCESSFUL),
+            ));
+            progressDialog.hideProgress();
+            //SubjectProvider().getStudentDetails(widget.subj_id);
+            //Navigator.pop(context);
+          });
+        }
+        break;
+      case EventConstants.STUDENT_ALREADY_ADDED_TO_SUBJECT:
+        {
+          setState(() {
+            _formKey.currentState.showSnackBar(new SnackBar(
+              content: new Text(SnackBarText.STUDENT_ALREADY_ADDED),
+            ));
+            progressDialog.hideProgress();
+          });
+        }
+        break;
+      case EventConstants.ADD_STUDENT_TO_SUBJECT_UNSUCCESSFUL:
+        {
+          setState(() {
+            _formKey.currentState.showSnackBar(new SnackBar(
+              content: new Text(SnackBarText.ADD_STUDENT_TO_SUBJECT_UNSUCCESSFUL),
+            ));
+            progressDialog.hideProgress();
+          });
+        }
+        break;
+      case EventConstants.NO_INTERNET_CONNECTION:
+        {
+          setState(() {
+            _formKey.currentState.showSnackBar(new SnackBar(
+              content: new Text(SnackBarText.NO_INTERNET_CONNECTION),
+            ));
+            progressDialog.hideProgress();
+          });
+        }
+        break;
+    }
   }
 
   void choiceAction(String choice){

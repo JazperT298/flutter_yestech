@@ -135,6 +135,45 @@ class SubjectProvider {
   }
 
   ///////////////////////////////////////////////////////////////////////////////
+  Future<EventObject> addStudentToSubject1(String studentCode, String subjectid) async {
+    try {
+      print('addStudentToSubject');
+      print(studentCode);
+      print(subjectid);
+      final encoding = APIConstants.OCTET_STREAM_ENCODING;
+      final response = await http.post('${APIConstants.API_BASE_LIVE_URL}/controller_educator/add_student_to_subject.php',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+          },
+          body: {
+            "stud_code": studentCode,
+            "subj_id": subjectid
+          },
+          encoding: Encoding.getByName(encoding)
+      );
+      print(response.body);
+      final responseJson = json.decode(response.body.substring(1, response.body .length-1));
+
+      ApiResponse apiResponse = ApiResponse.fromJson(responseJson);
+      print("YAWA" + apiResponse.result);
+      if (apiResponse.result == APIOperations.SUCCESS) {
+        print('BR 2 ' );
+        return new EventObject(
+            id: EventConstants.ADD_STUDENT_TO_SUBJECT_SUCCESSFUL, object: null);
+      } else if (response.body == APIOperations.FAILURE) {
+        print('BR 3 ' );
+        return new EventObject(id: EventConstants.STUDENT_ALREADY_ADDED_TO_SUBJECT);
+      } else {
+        print('BR 4 ' );
+        return new EventObject(
+            id: EventConstants.ADD_STUDENT_TO_SUBJECT_UNSUCCESSFUL);
+      }
+    } catch (Exception) {
+      return EventObject();
+    }
+  }
+
+
   Future<EventObject> addStudentToSubject(String studentCode, String subjectid) async {
     try {
       final encoding = APIConstants.OCTET_STREAM_ENCODING;
@@ -144,31 +183,20 @@ class SubjectProvider {
           },
           body: {
             'stud_code': studentCode,
-            'subj_id': subjectid,
+            'subj_id': subjectid
           },
-          encoding: Encoding.getByName(encoding));
-      print(response.body);
-
-      if (response.body == 'success') {
-        print('YAWA 2 ' );
-        return new EventObject(
-            id: EventConstants.DELETE_SUBJECT_SUCCESSFUL, object: null);
-      } else if (response.body == APIOperations.FAILURE) {
-        print('YAWA 3 ' );
-        return new EventObject(id: EventConstants.DELETE_SUBJECT_UN_SUCCESSFUL);
-      } else {
-        print('YAWA 4 ' );
-        return new EventObject(
-            id: EventConstants.DELETE_SUBJECT_UN_SUCCESSFUL);
-      }
+          encoding: Encoding.getByName(encoding)
+      );
+      print("YAWA" + response.body);
     } catch (Exception) {
       return EventObject();
     }
   }
 
 
+
   Future<List<Users>> getStudentDetails(String subjectid) async {
-    print("FASD");
+    print("FASDG");
     final encoding = APIConstants.OCTET_STREAM_ENCODING;
     final response = await http.post('${APIConstants.API_BASE_LIVE_URL}/controller_educator/get_students_from_subject.php',
         headers: {
@@ -178,7 +206,7 @@ class SubjectProvider {
           'subj_id': subjectid,
         },
         encoding: Encoding.getByName(encoding));
-    print("FASD" + response.body);
+    print("FASDF" + response.body);
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
